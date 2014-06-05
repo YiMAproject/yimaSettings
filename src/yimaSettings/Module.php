@@ -1,24 +1,16 @@
 <?php
 namespace yimaSettings;
 
-use Zend\ModuleManager\Feature\InitProviderInterface;
-use Zend\ModuleManager\ModuleManagerInterface;
-
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\EventManager\EventInterface;
-use Zend\Mvc\MvcEvent;
-
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ControllerProviderInterface;
-use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
-use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
-use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
-
+/**
+ * Class Module
+ *
+ * @package yimaSettings
+ */
 class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
