@@ -3,6 +3,7 @@ namespace yimaSettings\Service\Settings;
 
 use Poirot\Dataset\Entity;
 use Traversable;
+use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\Hydrator\AbstractHydrator;
 
 /**
@@ -67,7 +68,16 @@ class SettingEntity extends Entity
             // collect form elements
             if (isset($value['element'])) {
                 // form element data
+                $label = (isset($value['label'])) ? $value['label'] : null;
+
                 $value = $value['element'];
+                if ($label) {
+                    // set label for element
+                    if (!isset($value['options']) && !is_array($value['options'])) {
+                        $value['options'] = array();
+                    }
+                    $value['options'] = ArrayUtils::merge($value['options'], array('label' => $label));
+                }
                 $value['name'] = $key; // we need name at least
                 $this->formFactory[] = $value;
             }
