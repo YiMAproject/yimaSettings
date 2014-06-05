@@ -106,6 +106,8 @@ class SettingEntity extends Entity
         // bind setting values to form
         $form->bind($this);
 
+        // $form->prepare();
+
         return $form;
     }
 

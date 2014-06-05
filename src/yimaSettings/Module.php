@@ -59,6 +59,9 @@ class Module implements
     {
         return array(
             'invokables' => array(
+                # Settings Model
+                'yimaSettings.Model.Settings' => 'yimaSettings\Model\Settings',
+
                 # fetch settings entity and related form for a section
                 'yimaSettings' => 'yimaSettings\Service\Settings',
             ),

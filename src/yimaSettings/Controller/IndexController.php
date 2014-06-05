@@ -13,8 +13,8 @@ class IndexController extends AbstractActionController
         ->getSetting('defaults');
 
         echo $entitySett->linkedin.'<br/>';
-        
-        $entitySett->getForm();
+
+        d_r($entitySett->getForm()->get('linkedin'));
 
         die('>_');
     }

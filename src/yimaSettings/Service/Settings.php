@@ -3,6 +3,7 @@ namespace yimaSettings\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class Settings
@@ -38,7 +39,17 @@ class Settings implements serviceLocatorAwareInterface
             }
 
             $conf = $conf[$section];
-            $this->settings[$section] = new Settings\SettingEntity($conf);
+            $settEntity = new Settings\SettingEntity($conf);
+
+            // replace saved config with defaults {
+            $model = $this->getServiceLocator()->get('yimaSettings.Model.Settings');
+            $savedSett = $model->load($section);
+            foreach ($savedSett as $key => $val) {
+                $settEntity->set($key, $val);
+            }
+            // ... }
+
+            $this->settings[$section] = $settEntity;
         }
 
         return $this->settings[$section];
