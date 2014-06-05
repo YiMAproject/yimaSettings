@@ -1,0 +1,38 @@
+{
+    "name": "rayamedia/yima-settings",
+    "type": "yima-core-module",
+    "description": "Yima Key/Value Based Setting Manager Module Based On ZF2.",
+    "keywords": [
+        "zf2 module",
+        "yima module",
+        "raya media"
+    ],
+    "authors": [
+        {
+            "name": "Payam Naderi",
+            "email": "naderi.payam@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "rayamedia/yima-plugin-installer": "dev-master"
+    },
+    "extra": {
+        "yima-plugin-name": "yimaSettings"
+    },
+    "minimum-stability": "dev",
+    "autoload" : {
+        "psr-0" : {
+            "yimaSettings\\" : "src/"
+        },
+        "classmap" : [
+            "./Module.php"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.raya-media.com/"
+        }
+    ]
+}
