@@ -65,7 +65,7 @@ class SettingEntity extends Entity
 
             $return[$key] = (isset($value['value'])) ? $value['value'] : null;
 
-            // collect form elements
+            // collect form elements {
             if (isset($value['element'])) {
                 // form element data
                 $label = (isset($value['label'])) ? $value['label'] : null;
@@ -81,6 +81,7 @@ class SettingEntity extends Entity
                 $value['name'] = $key; // we need name at least
                 $this->formFactory[] = $value;
             }
+            // ... }
         }
 
         return $return;

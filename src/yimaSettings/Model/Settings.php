@@ -12,16 +12,33 @@ use Zend\Config\Writer\Xml as XmlWriter;
  */
 class Settings implements SettingsInterface
 {
-
+    /**
+     * Save Entity Properties for a section
+     * section is sets of related configs that collect together
+     *
+     * @param $section
+     * @param SettingEntity $entity
+     *
+     * @return boolean
+     */
     public function save($section, SettingEntity $entity)
     {
         $xml = new XmlWriter();
 
         $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.xml');
 
-        return $xml->toFile($file, $entity->getArrayCopy());
+        $xml->toFile($file, $entity->getArrayCopy());
+
+        return true;
     }
 
+    /**
+     * Load Entity Properties for a section
+     *
+     * @param $section
+     *
+     * @return array
+     */
     public function load($section)
     {
         $xml = new XmlReader();
