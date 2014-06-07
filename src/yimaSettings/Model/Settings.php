@@ -2,8 +2,7 @@
 namespace yimaSettings\Model;
 
 use yimaSettings\Service\Settings\SettingEntity;
-use Zend\Config\Reader\Xml as XmlReader;
-use Zend\Config\Writer\Xml as XmlWriter;
+use Zend\Config\Writer\PhpArray as PhpArrayWriter;
 
 /**
  * Class Settings
@@ -23,11 +22,10 @@ class Settings implements SettingsInterface
      */
     public function save($section, SettingEntity $entity)
     {
-        $xml = new XmlWriter();
+        $writer = new PhpArrayWriter();
 
-        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.xml');
-
-        $xml->toFile($file, $entity->getArrayCopy());
+        $file = __DIR__.DS. '../../../config'.DS. $section.'.php';
+        $writer->toFile($file, $entity->getArrayCopy());
 
         return true;
     }
@@ -41,10 +39,13 @@ class Settings implements SettingsInterface
      */
     public function load($section)
     {
-        $xml = new XmlReader();
+        $return = array();
 
-        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.xml');
+        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.php');
+        if (file_exists($file)) {
+            $return = include_once($file);
+        }
 
-        return $xml->fromFile($file);
+        return $return;
     }
 }
