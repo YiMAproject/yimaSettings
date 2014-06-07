@@ -24,7 +24,11 @@ class Settings implements SettingsInterface
     {
         $writer = new PhpArrayWriter();
 
-        $file = __DIR__.DS. '../../../config'.DS. $section.'.php';
+        $file = __DIR__.DS. '../../../config'.DS. $section.'.config.php';
+        if (!file_exists($file)) {
+
+        }
+
         $writer->toFile($file, $entity->getArrayCopy());
 
         return true;
@@ -41,7 +45,7 @@ class Settings implements SettingsInterface
     {
         $return = array();
 
-        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.php');
+        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.config.php');
         if (file_exists($file)) {
             $return = include_once($file);
         }
