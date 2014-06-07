@@ -25,8 +25,9 @@ class Settings implements SettingsInterface
         $writer = new PhpArrayWriter();
 
         $file = __DIR__.DS. '../../../config'.DS. $section.'.config.php';
-        if (!file_exists($file)) {
-
+        if (file_exists($file)) {
+            // avoid permission denied for files on some servers
+            unlink($file);
         }
 
         $writer->toFile($file, $entity->getArrayCopy());
