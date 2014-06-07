@@ -8,13 +8,10 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        /** @var $entitySett SettingEntity */
-        $entitySett = $this->getServiceLocator()->get('yimaSettings')
-        ->getSetting('defaults');
+        $this->settingHelper()->linkedin = 'this is changed';
+        echo $this->settingHelper()->linkedin;
 
-        echo $entitySett->linkedin.'<br/>';
-
-        d_r($entitySett->getForm()->get('linkedin'));
+        $this->settingHelper()->save();
 
         die('>_');
     }
