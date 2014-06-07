@@ -3,7 +3,6 @@ namespace yimaSettings\Service;
 
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class Settings

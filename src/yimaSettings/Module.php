@@ -18,22 +18,6 @@ class Module implements
     ControllerProviderInterface
 {
     /**
-     * Return an array for passing to Zend\Loader\AutoloaderFactory.
-     *
-     * @return array
-     */
-    public function getAutoloaderConfig()
-    {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
-                    __NAMESPACE__ => __DIR__,
-                ),
-            ),
-        );
-    }
-
-    /**
      * Returns configuration to merge with application configuration
      *
      * @return array|\Traversable
@@ -43,13 +27,6 @@ class Module implements
         // usually return like this
         return include __DIR__ . '/../../config/module.config.php';
     }
-
-
-    /**
-     * Implemented Service Listener Features --------------------------------------------------\
-     *
-     * @see \Zend\ServiceManager\Config
-     */
 
     /**
      * @inheritdoc
@@ -69,6 +46,20 @@ class Module implements
     }
 
     /**
+     * Controller helper services
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
+    public function getControllerPluginConfig()
+    {
+        return array(
+            'invokables' => array (
+                'settingHelper' => 'yimaSettings\Controller\Plugin\SettingHelper',
+            ),
+        );
+    }
+
+    /**
      * @inheritdoc
      *
      */
@@ -79,6 +70,22 @@ class Module implements
             'invokables' => array(
                 'yimaSettings.Controller.Index' => 'yimaSettings\Controller\IndexController'
             )
+        );
+    }
+
+    /**
+     * Return an array for passing to Zend\Loader\AutoloaderFactory.
+     *
+     * @return array
+     */
+    public function getAutoloaderConfig()
+    {
+        return array(
+            'Zend\Loader\StandardAutoloader' => array(
+                'namespaces' => array(
+                    __NAMESPACE__ => __DIR__,
+                ),
+            ),
         );
     }
 }
