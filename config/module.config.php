@@ -19,6 +19,13 @@ return array(
                         # 'value' => 'value not set from here because of hydrator',
                     ),
                 ),
+                # sets of action behavior options
+                'options' => array(
+                    # merge with application config on bootstrap
+                    'merged_config' => false,
+                    # not editable with setting form in controller
+                    'read_only'     => true,
+                ),
             ),
         ),
     ),
