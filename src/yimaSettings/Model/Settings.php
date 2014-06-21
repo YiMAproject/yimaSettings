@@ -15,16 +15,16 @@ class Settings implements SettingsInterface
      * Save Entity Properties for a section
      * section is sets of related configs that collect together
      *
-     * @param $section
+     * @param $namespace
      * @param SettingEntity $entity
      *
      * @return boolean
      */
-    public function save($section, SettingEntity $entity)
+    public function updateWithNamespace($namespace, SettingEntity $entity)
     {
         $writer = new PhpArrayWriter();
 
-        $file = __DIR__.DS. '../../../config'.DS. $section.'.config.php';
+        $file = __DIR__.DS. '../../../config'.DS. $namespace.'.config.php';
         if (file_exists($file)) {
             // avoid permission denied for files on some servers
             unlink($file);
@@ -38,15 +38,15 @@ class Settings implements SettingsInterface
     /**
      * Load Entity Properties for a section
      *
-     * @param $section
+     * @param $namespace
      *
      * @return array
      */
-    public function load($section)
+    public function getDataWithNamespace($namespace)
     {
         $return = array();
 
-        $file = realpath(__DIR__.DS. '../../../config'.DS. $section.'.config.php');
+        $file = realpath(__DIR__.DS. '../../../config'.DS. $namespace.'.config.php');
         if (file_exists($file)) {
             $return = include_once($file);
         }

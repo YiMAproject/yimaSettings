@@ -22,44 +22,48 @@ class Settings implements serviceLocatorAwareInterface
     protected $settings = array();
 
     /**
-     * Get Setting
+     * Get Setting for specific part
      *
-     * @param string $section
+     * note: create an entity from setting option and replace
+     *       default setting values with data saved in model.
+     *
+     * @param string $namespace
      *
      * @throws \Exception
      * @return Settings\SettingEntity
      */
-    public function getSetting($section = 'defaults')
+    public function getSetting($namespace = 'defaults')
     {
-        if (! isset($this->settings[$section])) {
-            $conf = $this->getConfig();
-            if (!isset($conf[$section])) {
-                throw new \Exception("There is no configuration for '{$section}' on Yima Settings.");
+        if (! isset($this->settings[$namespace])) {
+            $conf = $this->getMergedConfig();
+            if (!isset($conf[$namespace])) {
+                throw new \Exception("There is no configuration for '{$namespace}' on Yima Settings.");
             }
 
-            $conf = $conf[$section];
+            $conf = $conf[$namespace];
             $settEntity = new Settings\SettingEntity($conf);
 
             // replace saved config with defaults {
             $model = $this->getServiceLocator()->get('yimaSettings.Model.Settings');
-            $savedSett = $model->load($section);
+            $savedSett = $model->getDataWithNamespace($namespace);
             foreach ($savedSett as $key => $val) {
                 $settEntity->set($key, $val);
             }
             // ... }
 
-            $this->settings[$section] = $settEntity;
+            $this->settings[$namespace] = $settEntity;
         }
 
-        return $this->settings[$section];
+        return $this->settings[$namespace];
     }
 
     /**
-     * Get Yima Settings Configuration Settings
+     * Get Yima Settings Conf. from Application
+     * Merged Config
      *
      * @return array|object
      */
-    protected function getConfig()
+    protected function getMergedConfig()
     {
         /** @var $sm \Zend\ServiceManager\ServiceManager */
         $sm   = $this->getServiceLocator();

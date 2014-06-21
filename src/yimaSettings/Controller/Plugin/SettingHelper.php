@@ -95,7 +95,7 @@ class settingHelper extends AbstractPlugin
     {
         $sm = $this->getServiceManager();
         $sm->get('yimaSettings.Model.Settings')
-            ->save($this->section, $this->entity);
+            ->updateWithNamespace($this->section, $this->entity);
 
         return $this;
     }
