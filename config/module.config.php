@@ -25,23 +25,22 @@ return array(
 
     // --------------------------------------------------------------------------------------
 
+    # Add menu item into adminor navigation
+    'navigation' => array(
+        'admin' => array(
+            array(
+                'label' 	 => 'Settings',
+                'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default',
+                'module'     =>'yimaSettings',
+                'controller' => 'Index',
+                //'action'     => 'dashboard', // by default
+            ),
+        ),
+    ),
+
     'view_manager' => array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'yima-kvsetting' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/settings',
-                    'defaults' => array(
-                        'controller' => 'yimaSettings.Controller.Index',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
         ),
     ),
 );
