@@ -14,20 +14,9 @@ use Zend\Stdlib\Hydrator\AbstractHydrator;
 class SettingEntity extends Entity
 {
     /**
-     * Data options to creating form
-     * @var array
-     */
-    protected $formFactory;
-
-    /**
-     * @var AbstractHydrator
-     */
-    protected $formHydrator;
-
-    /**
      * Construct
      *
-     * @param array|traversable|toArray Object $data
+     * @param array[SettingEntityItems] $data Data
      */
     public function __construct($data = array())
     {
@@ -37,54 +26,59 @@ class SettingEntity extends Entity
     }
 
     /**
-     * Extract Data into key => value array
-     * and collect form data options to form generator
-     * @see $this->getForm();
+     * Validate Entity Data
      *
-     * @param  $data
+     * @param mixed $data Data
      *
-     * @return \Traversable | array
+     * @return bool
      */
-    protected function extractData($data)
+    public function isValidEntityData($data)
     {
-        if (is_object($data)) {
-            if (method_exists($data, 'toArray')) {
-                $data = call_user_func(array($data, 'toArray'), $data);
-            }
+        return ($data instanceof SettingEntityItems);
+    }
+
+    /**
+     * Check for validated Entity data
+     *
+     * note: We are using check method that extended
+     *       classes can throw own exception message
+     *
+     * @param mixed $data Data
+     *
+     * @return bool true
+     */
+    protected function checkValidEntityData($data)
+    {
+        if (!$this->isValidEntityData($data)) {
+            throw new \Exception(
+                sprintf(
+                    'Invalid Entity Data "%s". Data must be instance of "SettingEntityItems".',
+                    (is_object($data)) ? get_class($data) : gettype($data)
+                )
+            );
+        }
+    }
+
+    /**
+     * Set entity value
+     *
+     * an entity can have a setter method:
+     * variable_name ===> setVariableName()
+     *
+     * @param string $name
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        if (is_array($value)) {
+            // we sure that data array is valid by construct -
+            // desired entity
+            $value = new SettingEntityItems($value);
         }
 
-        if (! is_array($data) && ! $data instanceof Traversable   ) {
-            throw new \Exception(__METHOD__ . ' expects an array or Traversable set of options');
-        }
-
-        $return = array();
-        foreach ($data as $key => $value) {
-            if ($value instanceof Traversable) {
-                $value = (array) $value;
-            }
-
-            $return[$key] = (isset($value['value'])) ? $value['value'] : null;
-
-            // collect form elements {
-            if (isset($value['element'])) {
-                // form element data
-                $label = (isset($value['label'])) ? $value['label'] : null;
-
-                $value = $value['element'];
-                if ($label) {
-                    // set label for element
-                    if (!isset($value['options']) && !is_array($value['options'])) {
-                        $value['options'] = array();
-                    }
-                    $value['options'] = ArrayUtils::merge($value['options'], array('label' => $label));
-                }
-                $value['name'] = $key; // we need name at least
-                $this->formFactory[] = $value;
-            }
-            // ... }
-        }
-
-        return $return;
+        parent::__set($key, $value);
     }
 
     /**
@@ -96,13 +90,37 @@ class SettingEntity extends Entity
     {
         $form = new \Zend\Form\Form();
 
-        foreach($this->formFactory as $elem) {
-            $form->add($elem);
+        /** @var $ent \yimaSettings\Service\Settings\SettingEntityItems */
+        foreach($this as $key => $ent) {
+            $ent = $ent->getArrayCopy();
+
+            // collect form elements {
+            if (isset($ent['element'])) {
+                /* @note: Values are set from hydrator */
+
+                // form element data
+                $label = (isset($ent['label'])) ? $ent['label'] : null;
+
+                $element = $ent['element'];
+                if ($label) {
+                    // set label for element
+                    if (!isset($element['options']) && !is_array($element['options'])) {
+                        $element['options'] = array();
+                    }
+                    $element['options'] = ArrayUtils::merge(
+                        $element['options'],
+                        array('label' => $label)
+                    );
+                }
+                $element['name'] = $key; // we need name at least
+
+                $form->add($element);
+            }
+            // ... }
         }
 
         // form hydrator that we can bind settingEntity into form
-        $hydrator = $this->getFormHydrator();
-        $form->setHydrator($hydrator);
+        $form->setHydrator(new SettingHydrator());
 
         // bind setting values to form
         $form->bind($this);
@@ -110,20 +128,5 @@ class SettingEntity extends Entity
         // $form->prepare();
 
         return $form;
-    }
-
-    /**
-     * Get form hydrator
-     * with hydrator we can set values from SettingEntity into form
-     *
-     * @return SettingHydrator
-     */
-    protected function getFormHydrator()
-    {
-        if (!$this->formHydrator) {
-            $this->formHydrator = new SettingHydrator();
-        }
-
-        return $this->formHydrator;
     }
 }

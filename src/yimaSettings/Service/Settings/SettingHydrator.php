@@ -28,7 +28,15 @@ class SettingHydrator extends AbstractHydrator
             );
         }
 
-        return $object->getArrayCopy();
+        // Get only Key and Value Pair of data from SettingEntity
+
+        $return = array();
+        /** @var $data \yimaSettings\Service\Settings\SettingEntityItems */
+        foreach($object as $key => $data) {
+            $return[$key] = $data->value;
+        }
+
+        return $return;
     }
 
     /**
