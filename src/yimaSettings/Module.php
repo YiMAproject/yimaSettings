@@ -5,6 +5,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ControllerProviderInterface;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 
 /**
  * Class Module
@@ -15,6 +16,7 @@ class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface,
+    ViewHelperProviderInterface,
     ControllerProviderInterface
 {
     /**
@@ -55,6 +57,20 @@ class Module implements
         return array(
             'invokables' => array (
                 'settingHelper' => 'yimaSettings\Controller\Plugin\SettingHelper',
+            ),
+        );
+    }
+
+    /**
+     * View helper services
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
+    public function getViewHelperConfig()
+    {
+        return array(
+            'invokables' => array (
+                'settings' => 'yimaSettings\View\Helper\SettingHelper',
             ),
         );
     }
