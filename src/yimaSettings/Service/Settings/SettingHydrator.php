@@ -43,13 +43,15 @@ class SettingHydrator extends AbstractHydrator
      * Hydrate an Entity object
      *
      * @param  array $data
-     * @param  object $object
-     * @return object
+     * @param  SettingEntity $entity Entity Object
+     *
+     * @return SettingEntity
+     *
      * @throws \Exception for a non-object $object
      */
-    public function hydrate(array $data, $object)
+    public function hydrate(array $data, $entity)
     {
-        if (!$object instanceof SettingEntity) {
+        if (!$entity instanceof SettingEntity) {
             throw new \Exception(
                 sprintf(
                     '%s expects the provided $object to be a SettingEntity instance.', __METHOD__
@@ -57,8 +59,13 @@ class SettingHydrator extends AbstractHydrator
             );
         }
 
-        $object->setProperties($data);
-        
-        return $object;
+        foreach($data as $key => $val) {
+            if (isset($entity->{$key})) {
+                // chane only values of presented entity members
+                $entity->{$key}->value = $val;
+            }
+        }
+
+        return $entity;
     }
 }
