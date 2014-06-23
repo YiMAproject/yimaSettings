@@ -34,13 +34,15 @@ class settingHelper extends AbstractPlugin
      *
      * @return SettingEntity
      */
-    public function __invoke($section = 'defaults')
+    public function __invoke($namespace = 'defaults')
     {
-        $this->section = $section;
+        $this->section = $namespace;
 
         $sm = $this->getServiceManager();
         /** @var $entitySett SettingEntity */
-        $entitySett   = $sm->get('yimaSettings')->getSetting($section);
+        $entitySett   = $sm->get('yimaSettings')
+            ->getSetting($namespace);
+
         $this->entity = $entitySett;
 
         return $this;
@@ -95,7 +97,7 @@ class settingHelper extends AbstractPlugin
     {
         $sm = $this->getServiceManager();
         $sm->get('yimaSettings.Model.Settings')
-            ->updateWithNamespace($this->section, $this->entity);
+            ->save($this->entity);
 
         return $this;
     }

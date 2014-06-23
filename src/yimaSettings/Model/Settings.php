@@ -10,7 +10,7 @@ use Zend\Config\Writer\PhpArray as PhpArrayWriter;
  *
  * @package yimaSettings\Model
  */
-class Settings implements SettingsInterface
+class Settings implements SettingsModelInterface
 {
     /**
      * @var SettingHydrator
@@ -21,13 +21,14 @@ class Settings implements SettingsInterface
      * Save Entity Properties for a section
      * section is sets of related configs that collect together
      *
-     * @param string        $namespace Namespace
-     * @param SettingEntity $entity    Entity
+     * @param SettingEntity $entity Entity
      *
      * @return boolean
      */
-    public function updateWithNamespace($namespace, SettingEntity $entity)
+    public function save(SettingEntity $entity)
     {
+        $namespace = $entity->getNamespace();
+
         $writer = new PhpArrayWriter();
 
         $file = __DIR__.DS. '../../../config'.DS. $namespace.'.config.php';
@@ -38,7 +39,7 @@ class Settings implements SettingsInterface
 
         $writer->toFile(
             $file,
-            $this->getHydrator()->extract($entity)
+            $entity->getHydrator()->extract($entity)
         );
 
         return true;
@@ -48,26 +49,27 @@ class Settings implements SettingsInterface
      * Load namespace data and hydrate new data in given entity
      *
      * @param string        $namespace Namespace
-     * @param SettingEntity $entity    Entity
+     * @param SettingEntity &$entity    Entity
      *
      * @return array Key/Value Data
      */
-    public function getNamespaceDataIntoEntity($namespace, SettingEntity $entity)
+    public function load(SettingEntity &$entity)
     {
-        $data = $this->getDataWithNamespace($namespace);
-        $this->getHydrator()->hydrate($data, $entity);
+        $namespace = $entity->getNamespace();
+        $data = $this->loadWithNamespace($namespace);
+        $entity->getHydrator()->hydrate($data, $entity);
 
         return $data;
     }
 
     /**
-     * Load Entity Properties for a section
+     * Load Entity Properties for a namespace
      *
      * @param string $namespace Namespace
      *
      * @return array
      */
-    public function getDataWithNamespace($namespace)
+    public function loadWithNamespace($namespace)
     {
         $return = array();
 
@@ -77,19 +79,5 @@ class Settings implements SettingsInterface
         }
 
         return $return;
-    }
-
-    /**
-     * Get Hydrator
-     *
-     * @return SettingHydrator
-     */
-    protected function getHydrator()
-    {
-        if (!$this->hydrator) {
-            $this->hydrator = new SettingHydrator();
-        }
-
-        return $this->hydrator;
     }
 }

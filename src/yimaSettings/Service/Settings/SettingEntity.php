@@ -14,15 +14,59 @@ use Zend\Stdlib\Hydrator\AbstractHydrator;
 class SettingEntity extends Entity
 {
     /**
+     * Namespace of this entity used by model to retrieve data
+     *
+     * @var string
+     */
+    protected $namespace;
+
+    /**
+     * @var SettingHydrator
+     */
+    protected $hydrator;
+
+    /**
      * Construct
      *
      * @param array[SettingEntityItems] $data Data
      */
-    public function __construct($data = array())
+    public function __construct($namespace, $data = array())
     {
+        if (!is_string($namespace)) {
+            throw new \Exception('$namespace must be a string.');
+        }
+
+        $this->namespace = (string) $namespace;
+
         parent::__construct($data);
 
         $this->setStrictMode();
+    }
+
+    /**
+     * Get namespace name
+     *
+     * @return string
+     */
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    /**
+     * Get Hydrator
+     * note: used to manipulate and extract data of entity
+     *       good combination with models
+     *
+     * @return SettingHydrator
+     */
+    public function getHydrator()
+    {
+        if (!$this->hydrator) {
+            $this->hydrator = new SettingHydrator();
+        }
+
+        return $this->hydrator;
     }
 
     /**

@@ -41,8 +41,8 @@ class Module implements
                 # fetch settings entity and related form for a section
                 'yimaSettings' => 'yimaSettings\Service\Settings',
 
-                # Settings Model (to load and store data)
-                'yimaSettings.Model.Settings' => 'yimaSettings\Model\Settings',
+                    # Settings Model (to load and store data)       ↑
+                    'yimaSettings.Model.Settings' => 'yimaSettings\Model\Settings',
             ),
         );
     }

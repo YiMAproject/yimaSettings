@@ -4,11 +4,11 @@ namespace yimaSettings\Model;
 use yimaSettings\Service\Settings\SettingEntity;
 
 /**
- * Interface SettingsInterface
+ * Interface SettingsModelInterface
  *
  * @package yimaSettings\Model
  */
-interface SettingsInterface
+interface SettingsModelInterface
 {
     /**
      * Save Entity Properties for a section
@@ -19,17 +19,17 @@ interface SettingsInterface
      *
      * @return boolean
      */
-    public function updateWithNamespace($namespace, SettingEntity $entity);
+    public function save(SettingEntity $entity);
 
     /**
      * Load namespace data and hydrate new data in given entity
      *
      * @param string        $namespace Namespace
-     * @param SettingEntity $entity    Entity
+     * @param SettingEntity &$entity    Entity
      *
      * @return array Key/Value Data
      */
-    public function getNamespaceDataIntoEntity($namespace, SettingEntity $entity);
+    public function load(SettingEntity &$entity);
 
     /**
      * Load Entity Properties for a section
@@ -38,5 +38,5 @@ interface SettingsInterface
      *
      * @return array
      */
-    public function getDataWithNamespace($namespace);
+    public function loadWithNamespace($namespace);
 }

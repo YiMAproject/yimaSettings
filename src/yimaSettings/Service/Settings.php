@@ -1,6 +1,7 @@
 <?php
 namespace yimaSettings\Service;
 
+use yimaSettings\Model\SettingsModelInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -11,6 +12,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class Settings implements serviceLocatorAwareInterface
 {
+    /**
+     * @var SettingsModelInterface
+     */
+    protected $model;
+
     /**
      * @var \Zend\ServiceManager\ServiceManager
      */
@@ -57,11 +63,10 @@ class Settings implements serviceLocatorAwareInterface
                 ),
              */
             $namespaceSettings = $conf[$namespace];
-            $settEntity        = new Settings\SettingEntity($namespaceSettings);
+            $settEntity        = new Settings\SettingEntity($namespace, $namespaceSettings);
 
             // replace saved config with defaults {
-            $model = $this->getServiceLocator()->get('yimaSettings.Model.Settings');
-            $model->getNamespaceDataIntoEntity($namespace, $settEntity);
+            $this->getModel()->load($settEntity);
             // ... }
 
             $this->settings[$namespace] = $settEntity;
@@ -85,6 +90,36 @@ class Settings implements serviceLocatorAwareInterface
         $conf = (isset($conf['yima-settings'])) ? $conf['yima-settings'] : array();
 
         return $conf;
+    }
+
+    /**
+     * Get data model to retrieve settings
+     *
+     * @return SettingsModelInterface
+     */
+    public function getModel()
+    {
+        if (!$this->model) {
+            $this->setModel(
+                $this->getServiceLocator()->get('yimaSettings.Model.Settings')
+            );
+        }
+
+        return $this->model;
+    }
+
+    /**
+     * Set data model to store/retrieve settings
+     *
+     * @param SettingsModelInterface $model
+     *
+     * @return $this
+     */
+    public function setModel(SettingsModelInterface $model)
+    {
+        $this->model = $model;
+
+        return $this;
     }
 
     /**
