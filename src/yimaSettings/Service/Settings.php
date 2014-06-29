@@ -46,30 +46,13 @@ class Settings implements serviceLocatorAwareInterface
                 throw new \Exception("There is no configuration for '{$namespace}' on Yima Settings.");
             }
 
-            /*
-             * 'namespace' => array (
-             *      'setting_opt1'   => array(
-                        'value' => 'http://ir.linkedin.com/in/payamnaderi',
-                        'label' => 'Your Linkedin Address',
-                        # form element
-                        'element' => array(
-                            'type' => 'Zend\Form\Element\Url',
-                            'attributes' => array(
-                                'required' => 'required',
-                            ),
-                            // ...
-                        ),
-                    ),
-                ),
-             */
-            $namespaceSettings = $conf[$namespace];
-            $settEntity        = new Settings\SettingEntity($namespace, $namespaceSettings);
+            $conf   = array_merge(array('namespace' => $namespace), $conf[$namespace]);
+            $entity = Settings\SettingEntity::factory($conf);
 
-            // replace saved config with defaults {
-            $this->getModel()->load($settEntity);
-            // ... }
+            // replace saved config with defaults
+            $this->getModel()->load($entity);
 
-            $this->settings[$namespace] = $settEntity;
+            $this->settings[$namespace] = $entity;
         }
 
         return $this->settings[$namespace];

@@ -3,30 +3,47 @@ return array(
     'yima-settings' => array(
         # we can use default settings as shared Setting
         'defaults' => array(
-            'linkedin'   => array(
-                # used as default value
-                'value' => 'http://ir.linkedin.com/in/payamnaderi',
-                'label' => 'Your Linkedin Address',
-                # form element
-                'element' => array(
-                    'type' => 'Zend\Form\Element\Url',
-                    'attributes' => array(
-                        'required' => 'required',
+            # ----------------------------------------------------------------------------------|
+            'properties' => array(
+                'linkedin'   => array(
+                    # used as default value
+                    'value' => 'http://ir.linkedin.com/in/payamnaderi',
+                    'label' => 'Your Linkedin Address',
+
+                    # form element
+                    'element' => array(
+                        'type' => 'Zend\Form\Element\Url',
+                        'attributes' => array(
+                            'required' => 'required',
+                        ),
+                        'options' => array(
+                            # these options was replaced by values from top
+                            # 'label' => 'label not set here',
+                            # 'value' => 'value not set from here because of hydrator',
+                        ),
                     ),
+                    # sets of action behavior options
                     'options' => array(
-                        # these options was replaced by values from top
-                        # 'label' => 'label not set here',
-                        # 'value' => 'value not set from here because of hydrator',
+                        # merge with application config on bootstrap
+                        'merged_config' => false,
+                        # not editable with setting form in controller
+                        'read_only'     => true,
                     ),
-                ),
-                # sets of action behavior options
-                'options' => array(
-                    # merge with application config on bootstrap
-                    'merged_config' => false,
-                    # not editable with setting form in controller
-                    'read_only'     => true,
                 ),
             ),
+            'filters' => array(
+                'linkedin' => array(
+                    function($ve) {
+                        /** @var $ve \yimaSettings\Service\Settings\SettingEntityItems */
+                        $ve->addFilter('value', function($v) {
+                            return array('social' => array('linkedin' => $v));
+                        });
+
+                        return $ve;
+                    }
+                ),
+            ),
+            # -----------------------------------------------------------------------------------|
         ),
     ),
 
