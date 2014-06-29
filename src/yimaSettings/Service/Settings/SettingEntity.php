@@ -26,31 +26,27 @@ class SettingEntity extends Entity
     protected $hydrator;
 
     /**
-     * Construct
-     *
-     * @param array[SettingEntityItems] $data Data
-     */
-    public function __construct($namespace, $data = array())
-    {
-        if (!is_string($namespace)) {
-            throw new \Exception('$namespace must be a string.');
-        }
-
-        $this->namespace = (string) $namespace;
-
-        parent::__construct($data);
-
-        $this->setStrictMode();
-    }
-
-    /**
      * Get namespace name
      *
      * @return string
      */
     public function getNamespace()
     {
+        if (!$this->namespace) {
+            $this->namespace = 'default';
+        }
+
         return $this->namespace;
+    }
+
+    /**
+     * Set namespace
+     *
+     * @param $namespace
+     */
+    public function setNamespace($namespace)
+    {
+        $this->namespace = (string) $namespace;
     }
 
     /**
