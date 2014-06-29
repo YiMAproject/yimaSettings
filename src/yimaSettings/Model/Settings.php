@@ -31,7 +31,7 @@ class Settings implements SettingsModelInterface
 
         $writer = new PhpArrayWriter();
 
-        $file = __DIR__.DS. '../../../config'.DS. $namespace.'.config.php';
+        $file = __DIR__.DS. '../../../data'.DS. $namespace.'.config.php';
         if (file_exists($file)) {
             // avoid permission denied for files on some servers
             unlink($file);
@@ -73,7 +73,7 @@ class Settings implements SettingsModelInterface
     {
         $return = array();
 
-        $file = realpath(__DIR__.DS. '../../../config'.DS. $namespace.'.config.php');
+        $file = realpath(__DIR__.DS. '../../../data'.DS. $namespace.'.config.php');
         if (file_exists($file)) {
             $return = include_once($file);
         }
