@@ -1,6 +1,7 @@
 <?php
 namespace yimaSettings\Service\Settings;
 
+use Poirot\Dataset\Entity;
 use Zend\Stdlib\Hydrator\AbstractHydrator;
 
 /**
@@ -14,13 +15,13 @@ class SettingHydrator extends AbstractHydrator
     /**
      * Extract values from an Entity object 
      *
-     * @param SettingEntity $object
+     * @param SettingEntity $entity
      *
      * @return array
      */
-    public function extract($object)
+    public function extract($entity)
     {
-        if (!$object instanceof SettingEntity) {
+        if (!$entity instanceof SettingEntity) {
             throw new \Exception(
                 sprintf(
                     '%s expects the provided $object to be a SettingEntity instance.', __METHOD__
@@ -29,11 +30,17 @@ class SettingHydrator extends AbstractHydrator
         }
 
         // Get only Key and Value Pair of data from SettingEntity
+        $entity = clone $entity; // remain filters from orig. entity
+        $entity->clearFilters();
 
         $return = array();
         /** @var $data \yimaSettings\Service\Settings\SettingEntityItems */
-        foreach($object as $key => $data) {
-            $return[$key] = $data->value;
+        foreach($entity as $key => $data) {
+            $data = clone $data;   // remain filters from orig. entity
+            $data->clearFilters(); // clear filters
+
+            $value = $data->value;
+            $return[$key] = ($value instanceof Entity) ? $value->getArrayCopy() : $value;
         }
 
         return $return;
