@@ -1,11 +1,14 @@
 <?php
 namespace yimaSettings;
 
+use yimaSettings\Service\SettingListeners;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ControllerProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+use Zend\ModuleManager\ModuleManagerInterface;
 
 /**
  * Class Module
@@ -13,12 +16,27 @@ use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
  * @package yimaSettings
  */
 class Module implements
+    InitProviderInterface,
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface,
     ViewHelperProviderInterface,
     ControllerProviderInterface
 {
+    /**
+     * Initialize workflow
+     *
+     * @param  ModuleManagerInterface $manager
+     * @return void
+     */
+    public function init(ModuleManagerInterface $moduleManager)
+    {
+        /** @var $sharedEvents \Zend\EventManager\SharedEventManager */
+        $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+        // attach events listeners
+        $sharedEvents->attachAggregate(new SettingListeners());
+    }
+
     /**
      * Returns configuration to merge with application configuration
      *
