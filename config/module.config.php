@@ -8,7 +8,7 @@ return array(
             'properties' => array(
                 'linkedin'   => array(
                     # used as default value
-                    'value' => 'http://ir.linkedin.com/in/payamnaderi',
+                    'value' => 'http://linkedin.com',
                     'label' => 'Your Linkedin Address',
 
                     # form element
@@ -37,9 +37,13 @@ return array(
                 'linkedin' => array(
                     function($ve) {
                         /** @var $ve \yimaSettings\Service\Settings\SettingEntityItems */
-                        $ve->addFilter('value', function($v) {
-                            return array('social' => array('linkedin' => $v));
-                        });
+                        $ve->addFilter(
+                            'value'
+                            ,function($v) {
+                                return array('social' => array('linkedin' => $v));
+                            }
+                            ,'specific.name'
+                        );
 
                         return $ve;
                     }
