@@ -2,8 +2,9 @@
 return array(
     'yima-settings' => array(
         # we can use default settings as shared Setting
-        'defaults' => array(
+        'general' => array(
             # ----------------------------------------------------------------------------------|
+            'label' => 'General Settings',
             'properties' => array(
                 'linkedin'   => array(
                     # used as default value
@@ -25,7 +26,8 @@ return array(
                     # sets of action behavior options
                     'options' => array(
                         # merge with application config on bootstrap
-                        'merged_config' => false,
+                        # note: only contents of general namespace will merged with app. config
+                        'merged_config' => true,
                         # not editable with setting form in controller
                         'read_only'     => true,
                     ),
