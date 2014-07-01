@@ -38,15 +38,19 @@ class Settings implements serviceLocatorAwareInterface
      * @throws \Exception
      * @return Settings\SettingEntity
      */
-    public function getSetting($namespace = 'defaults')
+    public function getSetting($namespace = 'general')
     {
+        $namespace = strtolower($namespace);
+
         if (! isset($this->settings[$namespace])) {
             $conf = $this->getMergedConfig();
             if (!isset($conf[$namespace])) {
                 throw new \Exception("There is no configuration for '{$namespace}' on Yima Settings.");
             }
 
-            $conf   = array_merge(array('namespace' => $namespace), $conf[$namespace]);
+            // set namespace from config array key
+            $conf   = array_merge($conf[$namespace], array('namespace' => $namespace));
+
             $entity = Settings\SettingEntity::factory($conf);
 
             // replace saved config with defaults

@@ -81,7 +81,7 @@ class SettingListeners implements SharedListenerAggregateInterface
                         );
                     }
                 }
-            }
+            } # end foreach
 
             // merge settings with application config
             $sm->setAllowOverride(true);
