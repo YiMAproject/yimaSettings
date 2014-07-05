@@ -60,7 +60,7 @@ class SettingListeners implements SharedListenerAggregateInterface
             $yimaSettings = $sm->get('yimaSettings');
 
             // iterate over values of each settings namespace
-            foreach($yimaSettings->getSetting('general') as $key => $entity) {
+            foreach($yimaSettings->get('general') as $key => $entity) {
                 if (isset($entity->options) && $entity->options->merged_config) {
                     $value = $entity->value;
                     if ($value instanceof Entity) {

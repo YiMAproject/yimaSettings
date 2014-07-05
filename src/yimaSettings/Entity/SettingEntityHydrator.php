@@ -1,5 +1,5 @@
 <?php
-namespace yimaSettings\Service\Settings;
+namespace yimaSettings\Entity;
 
 use Poirot\Dataset\Entity;
 use Zend\Stdlib\Hydrator\AbstractHydrator;

@@ -10,7 +10,7 @@ use Zend\Config\Writer\PhpArray as PhpArrayWriter;
  *
  * @package yimaSettings\Model
  */
-class Settings implements SettingsModelInterface
+class SettingsModel implements SettingsModelInterface
 {
     /**
      * @var SettingHydrator
