@@ -1,34 +1,45 @@
 <?php
 namespace yimaSettings\Service;
-
-use yimaSettings\Model\SettingsModelInterface;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use yimaSettings\Entity\SettingEntity;
+use yimaSettings\Service\Settings\SettingsStorage;
+use yimaSettings\Service\Settings\SettingsStorageInterface;
 
 /**
  * Class Settings
  *
  * @package yimaSettings\Service
  */
-class Settings implements serviceLocatorAwareInterface
+class Settings
 {
-    /**
-     * @var SettingsModelInterface
-     */
-    protected $model;
-
-    /**
-     * @var \Zend\ServiceManager\ServiceManager
-     */
-    protected $sm;
-
     /**
      * @var array[SettingEntity]
      */
     protected $settings = array();
 
     /**
-     * Get Setting for specific part
+     * @var array
+     */
+    protected $configs;
+
+    /**
+     * @var SettingsStorageInterface
+     */
+    protected $storage;
+
+    protected $latestEntity = array();
+
+    /**
+     * Construct
+     *
+     * @param array $configs
+     */
+    public function __construct(array $configs)
+    {
+        $this->configs = $configs;
+    }
+
+    /**
+     * Get Setting for specific namespace
      *
      * note: create an entity from setting option and replace
      *       default setting values with data saved in model.
@@ -36,14 +47,27 @@ class Settings implements serviceLocatorAwareInterface
      * @param string $namespace
      *
      * @throws \Exception
-     * @return Settings\SettingEntity
+     * @return SettingEntity
      */
-    public function getSetting($namespace = 'general')
+    public function get($namespace = 'general')
+    {
+        return $this->__get($namespace);
+    }
+
+    /**
+     * Magic Method
+     *
+     * @param string $namespace
+     *
+     * @throws \Exception
+     * @return \Poirot\Dataset\Entity|SettingEntity
+     */
+    public function __get($namespace)
     {
         $namespace = strtolower($namespace);
 
         if (! isset($this->settings[$namespace])) {
-            $conf = $this->getMergedConfig();
+            $conf = $this->configs;
             if (!isset($conf[$namespace])) {
                 throw new \Exception("There is no configuration for '{$namespace}' on Yima Settings.");
             }
@@ -51,83 +75,52 @@ class Settings implements serviceLocatorAwareInterface
             // set namespace from config array key
             $conf   = array_merge($conf[$namespace], array('namespace' => $namespace));
 
-            $entity = Settings\SettingEntity::factory($conf);
-
-            // replace saved config with defaults
-            $this->getModel()->load($entity);
+            $entity = SettingEntity::factory($conf);
 
             $this->settings[$namespace] = $entity;
         }
 
-        return $this->settings[$namespace];
+        /** @var $entity SettingEntity */
+        $entity = $this->settings[$namespace];
+        // replace saved config with defaults
+        $this->getStorage()->load($entity);
+
+        return $entity;
     }
 
     /**
-     * Get Yima Settings Conf. from Application
-     * Merged Config
+     * Has Specific Setting for a Namespace?
      *
-     * @return array|object
+     * @param string $namespace Setting Namespace, exp. General
+     *
+     * @return bool
      */
-    protected function getMergedConfig()
+    public function hasSetting($namespace)
     {
-        /** @var $sm \Zend\ServiceManager\ServiceManager */
-        $sm   = $this->getServiceLocator();
-        $conf = $sm->get('config');
-
-        $conf = (isset($conf['yima-settings'])) ? $conf['yima-settings'] : array();
-
-        return $conf;
+        return (isset($this->configs[$namespace]) && is_array($this->configs[$namespace]));
     }
 
     /**
-     * Get data model to retrieve settings
+     * Get all registered settings section names
      *
-     * @return SettingsModelInterface
+     * @return array
      */
-    public function getModel()
+    public function getSettingsList()
     {
-        if (!$this->model) {
-            $this->setModel(
-                $this->getServiceLocator()->get('yimaSettings.Model.Settings')
-            );
+        return array_keys($this->configs);
+    }
+
+    /**
+     * Get Entity Values Storage To Save And Load Data
+     *
+     * @return SettingsStorage|SettingsStorageInterface
+     */
+    protected function getStorage()
+    {
+        if (!$this->storage) {
+            $this->storage = new SettingsStorage();
         }
 
-        return $this->model;
-    }
-
-    /**
-     * Set data model to store/retrieve settings
-     *
-     * @param SettingsModelInterface $model
-     *
-     * @return $this
-     */
-    public function setModel(SettingsModelInterface $model)
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    /**
-     * Set service locator
-     *
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
-    {
-        $this->sm = $serviceLocator;
-
-        return $this;
-    }
-
-    /**
-     * Get service locator
-     *
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator()
-    {
-        return $this->sm;
+        return $this->storage;
     }
 }
