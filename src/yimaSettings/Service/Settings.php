@@ -83,14 +83,14 @@ class Settings
 
             $entity = SettingEntity::factory($conf);
 
+            // replace saved config with defaults
+            $entity = $this->getStorage()->load($entity);
+
             $this->settings[$namespace] = $entity;
         }
 
         /** @var $entity SettingEntity */
         $entity = $this->settings[$namespace];
-
-        // replace saved config with defaults
-        $entity = $this->getStorage()->load($entity);
 
         // store entity
         // note: we want each part of codes only save own manipulated entities data
@@ -140,7 +140,19 @@ class Settings
             throw new \Exception('Nothing to save.');
         }
 
-        return $this->getStorage()->save($entity);
+        if ($this->getStorage()->save($entity)) {
+            // on successful save update entity values
+            $namespace = $entity->getNamespace();
+
+            $entity = $this->settings[$namespace];
+            $this->getStorage()->load($entity);
+
+            $return = true;
+        } else {
+            $return = false;
+        }
+
+        return $return;
     }
 
     /**
