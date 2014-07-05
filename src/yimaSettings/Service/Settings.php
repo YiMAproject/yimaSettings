@@ -26,6 +26,12 @@ class Settings
      */
     protected $storage;
 
+    /**
+     * Store latest entity fetched that we can save
+     * those entity for a part of code that request save
+     *
+     * @var array
+     */
     protected $latestEntity = array();
 
     /**
@@ -82,10 +88,59 @@ class Settings
 
         /** @var $entity SettingEntity */
         $entity = $this->settings[$namespace];
+
         // replace saved config with defaults
-        $this->getStorage()->load($entity);
+        $entity = $this->getStorage()->load($entity);
+
+        // store entity
+        // note: we want each part of codes only save own manipulated entities data
+        //       exp. if you manipulate some data in "index.php" and save on controller.php
+        //            nothing will happens
+        $callerId = $this->getCallerId();
+        $this->latestEntity[$callerId] = $entity;
 
         return $entity;
+    }
+
+    /**
+     * Generate a hash key from script who request call to this class
+     *
+     * @return string
+     */
+    protected function getCallerId()
+    {
+        list($t) = $trace = debug_backtrace(false);
+        foreach($trace as $t) {
+            if ($t['file'] != __FILE__) {
+                break;
+            }
+        }
+
+        $return = array(
+            $t['file'],
+            $t['class']
+        );
+
+        return md5(serialize($return));
+    }
+
+    /**
+    * Save Last Modified Entity
+    *
+    * @return boolean
+    */
+    public function save()
+    {
+        $callerID = $this->getCallerId();
+        $entity   = isset($this->latestEntity[$callerID])
+            ? $this->latestEntity[$callerID]
+            : null;
+
+        if (!$entity) {
+            throw new \Exception('Nothing to save.');
+        }
+
+        return $this->getStorage()->save($entity);
     }
 
     /**
