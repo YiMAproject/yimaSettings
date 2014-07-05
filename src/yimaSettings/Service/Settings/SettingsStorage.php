@@ -21,7 +21,7 @@ class SettingsStorage implements SettingsStorageInterface
 
         $writer = new PhpArrayWriter();
 
-        $file = __DIR__.DS. '../../../data'.DS. $namespace.'.config.php';
+        $file = __DIR__.DS. '../../../../data'.DS. $namespace.'.config.php';
         if (file_exists($file)) {
             // avoid permission denied for files on some servers
             unlink($file);
@@ -63,9 +63,9 @@ class SettingsStorage implements SettingsStorageInterface
     {
         $return = array();
 
-        $file = realpath(__DIR__.DS. '../../../data'.DS. $namespace.'.config.php');
+        $file = realpath(__DIR__.DS. '../../../../data'.DS. $namespace.'.config.php');
         if (file_exists($file)) {
-            $return = include_once($file);
+            $return = include($file);
         }
 
         return $return;
