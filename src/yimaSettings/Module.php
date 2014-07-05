@@ -1,12 +1,11 @@
 <?php
 namespace yimaSettings;
 
-use yimaSettings\Service\SettingListeners;
+use yimaSettings\Service\Listeners\AggregateListeners;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
-use Zend\ModuleManager\Feature\ControllerProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
 
@@ -20,8 +19,7 @@ class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface,
-    ViewHelperProviderInterface,
-    ControllerProviderInterface
+    ViewHelperProviderInterface
 {
     /**
      * Initialize workflow
@@ -34,7 +32,8 @@ class Module implements
         /** @var $sharedEvents \Zend\EventManager\SharedEventManager */
         $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
         // attach events listeners
-        $sharedEvents->attachAggregate(new SettingListeners());
+        // * merge merged general settings with app config
+        $sharedEvents->attachAggregate(new AggregateListeners());
     }
 
     /**
@@ -44,7 +43,6 @@ class Module implements
      */
     public function getConfig()
     {
-        // usually return like this
         return include __DIR__ . '/../../config/module.config.php';
     }
 
@@ -55,12 +53,9 @@ class Module implements
     public function getServiceConfig()
     {
         return array(
-            'invokables' => array(
+            'factories' => array(
                 # fetch settings entity and related form for a section
-                'yimaSettings' => 'yimaSettings\Service\Settings',
-
-                    # Settings Model (to load and store data)       ↑
-                    'yimaSettings.Model.Settings' => 'yimaSettings\Model\Settings',
+                'yimaSettings' => 'yimaSettings\Service\SettingsFactory',
             ),
         );
     }
@@ -90,20 +85,6 @@ class Module implements
             'invokables' => array (
                 'settings' => 'yimaSettings\View\Helper\SettingHelper',
             ),
-        );
-    }
-
-    /**
-     * @inheritdoc
-     *
-     */
-    public function getControllerConfig()
-    {
-        /* Merged Config Key "controller" */
-        return array(
-            'invokables' => array(
-                'yimaSettings.Controller.Index' => 'yimaSettings\Controller\IndexController'
-            )
         );
     }
 

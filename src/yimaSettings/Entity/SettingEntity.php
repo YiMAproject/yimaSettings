@@ -1,10 +1,8 @@
 <?php
-namespace yimaSettings\Service\Settings;
+namespace yimaSettings\Entity;
 
 use Poirot\Dataset\Entity;
-use Traversable;
 use Zend\Stdlib\ArrayUtils;
-use Zend\Stdlib\Hydrator\AbstractHydrator;
 
 /**
  * Class SettingEntity
@@ -14,14 +12,16 @@ use Zend\Stdlib\Hydrator\AbstractHydrator;
 class SettingEntity extends Entity
 {
     /**
-     * Namespace of this entity used by model to retrieve data
+     * Namespace of this entity used by storage to retrieve data
      *
      * @var string
      */
     protected $namespace;
 
     /**
-     * @var SettingHydrator
+     * Hydrate entity values
+     *
+     * @var SettingEntityHydrator
      */
     protected $hydrator;
 
@@ -33,7 +33,7 @@ class SettingEntity extends Entity
     public function getNamespace()
     {
         if (!$this->namespace) {
-            $this->namespace = 'default';
+            $this->namespace = 'general';
         }
 
         return $this->namespace;
@@ -54,12 +54,12 @@ class SettingEntity extends Entity
      * note: used to manipulate and extract data of entity
      *       good combination with models
      *
-     * @return SettingHydrator
+     * @return SettingEntityHydrator
      */
     public function getHydrator()
     {
         if (!$this->hydrator) {
-            $this->hydrator = new SettingHydrator();
+            $this->hydrator = new SettingEntityHydrator();
         }
 
         return $this->hydrator;
@@ -74,7 +74,7 @@ class SettingEntity extends Entity
      */
     public function isValidEntityData($data)
     {
-        return ($data instanceof SettingEntityItems);
+        return ($data instanceof SettingItemsEntity);
     }
 
     /**
@@ -115,7 +115,7 @@ class SettingEntity extends Entity
         if (is_array($value)) {
             // we sure that data array is valid by construct -
             // desired entity
-            $value = new SettingEntityItems($value);
+            $value = new SettingItemsEntity($value);
         }
 
         parent::__set($key, $value);
@@ -130,7 +130,7 @@ class SettingEntity extends Entity
     {
         $form = new \Zend\Form\Form();
 
-        /** @var $ent \yimaSettings\Service\Settings\SettingEntityItems */
+        /** @var $ent \yimaSettings\Entity\SettingItemsEntity */
         foreach($this as $key => $ent) {
             $ent = $ent->getArrayCopy();
 
@@ -160,7 +160,9 @@ class SettingEntity extends Entity
         }
 
         // form hydrator that we can bind settingEntity into form
-        $form->setHydrator(new SettingHydrator());
+        $form->setHydrator(
+            $this->getHydrator()
+        );
 
         // bind setting values to form
         $form->bind($this);

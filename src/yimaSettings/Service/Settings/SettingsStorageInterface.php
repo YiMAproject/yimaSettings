@@ -1,17 +1,17 @@
 <?php
-namespace yimaSettings\Model;
+namespace yimaSettings\Service\Settings;
 
-use yimaSettings\Service\Settings\SettingEntity;
+use yimaSettings\Entity\SettingEntity;
 
 /**
  * Interface SettingsModelInterface
  *
  * @package yimaSettings\Model
  */
-interface SettingsModelInterface
+interface SettingsStorageInterface
 {
     /**
-     * Save Entity Properties for a section
+     * Save Entity Value Properties for a section
      * section is sets of related configs that collect together
      *
      * @param string        $namespace Namespace
@@ -29,14 +29,5 @@ interface SettingsModelInterface
      *
      * @return array Key/Value Data
      */
-    public function load(SettingEntity &$entity);
-
-    /**
-     * Load Entity Properties for a section
-     *
-     * @param string $namespace Namespace
-     *
-     * @return array
-     */
-    public function loadWithNamespace($namespace);
+    public function load(SettingEntity $entity);
 }

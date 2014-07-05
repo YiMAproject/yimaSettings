@@ -1,22 +1,12 @@
 <?php
-namespace yimaSettings\Model;
+namespace yimaSettings\Service\Settings;
 
-use yimaSettings\Service\Settings\SettingEntity;
-use yimaSettings\Service\Settings\SettingHydrator;
+use yimaSettings\Entity\SettingEntity;
 use Zend\Config\Writer\PhpArray as PhpArrayWriter;
 
-/**
- * Class Settings
- *
- * @package yimaSettings\Model
- */
-class SettingsModel implements SettingsModelInterface
-{
-    /**
-     * @var SettingHydrator
-     */
-    protected $hydrator;
 
+class SettingsStorage implements SettingsStorageInterface
+{
     /**
      * Save Entity Properties for a section
      * section is sets of related configs that collect together
@@ -46,30 +36,30 @@ class SettingsModel implements SettingsModelInterface
     }
 
     /**
-     * Load namespace data and hydrate new data in given entity
+     * Load namespace value data and hydrate new data in given entity
      *
      * @param string        $namespace Namespace
      * @param SettingEntity &$entity    Entity
      *
      * @return array Key/Value Data
      */
-    public function load(SettingEntity &$entity)
+    public function load(SettingEntity $entity)
     {
         $namespace = $entity->getNamespace();
-        $data = $this->loadWithNamespace($namespace);
+        $data = $this->getNamespaceStoredData($namespace);
         $entity->getHydrator()->hydrate($data, $entity);
 
-        return $data;
+        return $entity;
     }
 
     /**
-     * Load Entity Properties for a namespace
+     * Load Entity Stored Value Properties for a namespace
      *
      * @param string $namespace Namespace
      *
      * @return array
      */
-    public function loadWithNamespace($namespace)
+    protected function getNamespaceStoredData($namespace)
     {
         $return = array();
 

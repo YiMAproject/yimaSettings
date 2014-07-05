@@ -5,12 +5,12 @@ use Poirot\Dataset\Entity;
 use Zend\Stdlib\Hydrator\AbstractHydrator;
 
 /**
- * Class SettingHydrator
+ * Class SettingEntityHydrator
  * to bind settingEntity into form
  *
  * @package yimaSettings\Service\Settings
  */
-class SettingHydrator extends AbstractHydrator
+class SettingEntityHydrator extends AbstractHydrator
 {
     /**
      * Extract values from an Entity object 

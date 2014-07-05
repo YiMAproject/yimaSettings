@@ -1,8 +1,9 @@
 <?php
 return array(
     'yima-settings' => array(
-        # we can use default settings as shared Setting
+        # we can use general settings as shared Setting
         'general' => array(
+            # Entity Factory Options
             # ----------------------------------------------------------------------------------|
             'label' => 'General Settings',
             'properties' => array(
@@ -36,9 +37,9 @@ return array(
             'filters' => array(
                 'linkedin' => array(
                     function($ve) {
-                        /** @var $ve \yimaSettings\Service\Settings\SettingEntityItems */
+                        /** @var $ve \yimaSettings\Entity\SettingItemsEntity */
                         $ve->addFilter(
-                            'value'
+                            'value' // entity property
                             ,function($v) {
                                 return array('social' => array('linkedin' => $v));
                             }

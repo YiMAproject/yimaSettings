@@ -10,7 +10,7 @@ use Poirot\Dataset\Entity;
  *
  * @package yimaSettings\Service\Settings
  */
-class SettingEntityItems extends Entity
+class SettingItemsEntity extends Entity
 {
     /**
      * In Strict mode we cant add new Entity

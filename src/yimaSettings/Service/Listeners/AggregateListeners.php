@@ -1,11 +1,8 @@
 <?php
-namespace yimaSettings\Service;
+namespace yimaSettings\Service\Listeners;
 
 use Poirot\Dataset\Entity;
-use yimaLocali\Detector\AggregateDetectorInterface;
-use yimaLocali\Detector\DetectorInterface;
-use yimaLocali\Detector\Feature\SystemWideInterface;
-use yimaLocali\LocaleEvent;
+use yimaSettings\Service\Settings;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\SharedListenerAggregateInterface;
@@ -17,7 +14,7 @@ use Zend\Stdlib\ArrayUtils;
  *
  * @package yimaSettings\Service
  */
-class SettingListeners implements SharedListenerAggregateInterface
+class AggregateListeners implements SharedListenerAggregateInterface
 {
     /**
      * @var \Zend\Stdlib\CallbackHandler[]
@@ -52,42 +49,38 @@ class SettingListeners implements SharedListenerAggregateInterface
         $sm = $mvcEvent->getApplication()->getServiceManager();
 
         $config = $sm->get('config');
-        if (isset($config['yima-settings'])
-            && is_array($config['yima-settings'])
-            && !empty($config['yima-settings'])
-        ) {
-            /** @var $yimaSettings Settings */
-            $yimaSettings = $sm->get('yimaSettings');
 
-            // iterate over values of each settings namespace
-            foreach($yimaSettings->get('general') as $key => $entity) {
-                if (isset($entity->options) && $entity->options->merged_config) {
-                    $value = $entity->value;
-                    if ($value instanceof Entity) {
-                        $value = $value->getArrayCopy();
-                    } elseif (is_object($value) && method_exists($value, 'toArray')) {
-                        $value = $value->toArray();
-                    }
+        /** @var $yimaSettings Settings */
+        $yimaSettings = $sm->get('yimaSettings');
 
-                    if (is_array($value)) {
-                        $config = ArrayUtils::merge($config, $value);
-                    } else {
-                        throw new \Exception(
-                            sprintf(
-                                'Settings value "%s" mark as merged config but "%s" given.'
-                                ,$key
-                                ,(is_object($value)) ? get_class($value) : gettype($value)
-                            )
-                        );
-                    }
+        // iterate over values of each settings namespace
+        foreach($yimaSettings->get(/*'general'*/) as $key => $entity) {
+            if (isset($entity->options) && $entity->options->merged_config) {
+                $value = $entity->value;
+                if ($value instanceof Entity) {
+                    $value = $value->getArrayCopy();
+                } elseif (is_object($value) && method_exists($value, 'toArray')) {
+                    $value = $value->toArray();
                 }
-            } # end foreach
 
-            // merge settings with application config
-            $sm->setAllowOverride(true);
-            $sm->setService('config', $config);
-            $sm->setAllowOverride(false);
-        }
+                if (is_array($value)) {
+                    $config = ArrayUtils::merge($config, $value);
+                } else {
+                    throw new \Exception(
+                        sprintf(
+                            'Settings value "%s" mark as merged config but "%s" given and can`t merge.'
+                            ,$key
+                            ,(is_object($value)) ? get_class($value) : gettype($value)
+                        )
+                    );
+                }
+            }
+        } # end foreach
+
+        // merge settings with application config
+        $sm->setAllowOverride(true);
+        $sm->setService('config', $config);
+        $sm->setAllowOverride(false);
     }
 
     /**
