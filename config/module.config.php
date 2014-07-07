@@ -5,7 +5,7 @@ return array(
         'general' => array(
             # Entity Factory Options
             # ----------------------------------------------------------------------------------|
-            'label' => 'General Settings',
+            'label' => 'General System Settings',
             'properties' => array(
                 'linkedin'   => array(
                     # used as default value
