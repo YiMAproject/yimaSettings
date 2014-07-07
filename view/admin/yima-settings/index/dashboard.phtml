@@ -1,0 +1,82 @@
+<div class="row">
+    <div class="col-md-9">
+        <h2 class="page-header">
+            <?php echo $this->current_setting->label; ?>
+        </h2>
+
+        <?php
+        // within a view script
+        $form = $this->setting_form;
+
+        // Render the opening tag
+        $form->setAttribute('role', 'form');
+        $form->setAttribute('class', 'form-horizontal');
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+
+        <?php foreach ($form as $key => $element) { ?>
+        <div class="form-group">
+            <?php //error messages  ?>
+            <?php $messages = $element->getMessages(); ?>
+
+            <?php // print out label { ?>
+            <?php if ($label = $element->getOption('label')) { ?>
+                <label
+                    for="<?php echo $element->getAttribute('id');?>"
+                    class="col-sm-3 control-label">
+                    <?php echo $label; ?>
+                </label>
+            <?php } ?>
+            <?php // } you can also use $this->formLabel helper ?>
+
+            <?php
+            $isButton = function($element) {
+                if ($element instanceof \Zend\Form\Element\Button)
+                    return true;
+
+                $type = $element->getAttribute('type');
+                if ('reset' == $type || 'submit' == $type)
+                    return true;
+
+                return false;
+            };
+            ?>
+            <div class="col-sm-<?php echo ($isButton($element)) ? '12' : 9; ?>">
+                <?php $element->setAttribute('class', 'form-control'); ?>
+                <?php
+                if ($isButton($element)) {
+                    $element->setAttribute('class', 'btn btn-default pull-right');
+                }
+                ?>
+                <?php echo $this->formElement($element); ?>
+            </div>
+
+        </div>
+        <?php }//end foreach ?>
+        <?php echo $this->form()->closeTag() ?>
+
+    </div>
+    <div class="col-md-3">
+        <?php if (count($this->settings_list) > 0) { ?>
+        <ul class="nav nav-pills nav-stacked">
+            <?php foreach ($this->settings_list as $namespace => $props) {  ?>
+            <li class="<?php echo $class = ($this->current_setting->namespace == $namespace) ? 'active' : '';  ?>">
+                <?php
+                if ($class != 'active') {
+                    $href = $this->url(
+                        \yimaAdminor\Module::ADMIN_DEFAULT_ROUTE_NAME
+                        ,array('setting' => $namespace)
+                        ,true
+                    );
+                } else { $href = '#!'; }
+                ?>
+                <a href="<?php echo $href; ?>" >
+                    <?php echo $props->label; ?>
+                </a>
+            </li>
+            <?php } ?>
+        </ul>
+        <?php } ?>
+    </div>
+</div>
