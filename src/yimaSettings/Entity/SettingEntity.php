@@ -19,6 +19,13 @@ class SettingEntity extends Entity
     protected $namespace;
 
     /**
+     * Human Readable of Namespace
+     *
+     * @var string
+     */
+    protected $label;
+
+    /**
      * Hydrate entity values
      *
      * @var SettingEntityHydrator
@@ -47,6 +54,35 @@ class SettingEntity extends Entity
     public function setNamespace($namespace)
     {
         $this->namespace = (string) $namespace;
+    }
+
+    /**
+     * Set Human Readable of Namespace
+     *
+     * @param string $label Label
+     *
+     * @return $this
+     */
+    public function setLabel($label)
+    {
+        $this->label = (string) $label;
+
+        return $this;
+    }
+
+    /**
+     * Get Human Readable of Namespace
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        if (!$this->label) {
+            $label = ucfirst(strtolower($this->getNamespace()));
+            $this->setLabel($label);
+        }
+
+       return $this->label;
     }
 
     /**
