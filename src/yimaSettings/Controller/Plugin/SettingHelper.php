@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Controller\Plugin;
 
-use yimaSettings\Service\Settings\SettingEntity;
+use yimaSettings\Service\Settings;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -20,86 +20,17 @@ class settingHelper extends AbstractPlugin
     protected $serviceLocator;
 
     /**
-     * @var SettingEntity
-     */
-    protected $entity;
-
-    /**
-     * @var string
-     */
-    protected $section;
-
-    /**
      * Invoke as a functor
      *
-     * @return SettingEntity
+     * @return Settings
      */
-    public function __invoke($namespace = 'defaults')
-    {
-        $this->section = $namespace;
-
-        $sm = $this->getServiceManager();
-        /** @var $entitySett SettingEntity */
-        $entitySett   = $sm->get('yimaSettings')
-            ->getSetting($namespace);
-
-        $this->entity = $entitySett;
-
-        return $this;
-    }
-
-    // PROXY TO ENTITY ---
-
-    /**
-     * Proxy Call to EntitySetting
-     *
-     * @param $method
-     * @param $args
-     *
-     * @return mixed
-     */
-    public function __call($method, $args)
-    {
-        return call_user_func_array(array($this->entity, $method), $args);
-    }
-
-    /**
-     * Proxy Get To EntitySetting
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return call_user_func_array(array($this->entity, 'get'), array($name));
-    }
-
-    /**
-     * Proxy Set To EntitySetting
-     *
-     * @param $name
-     * @param $vale
-     *
-     * @return mixed
-     */
-    public function __set($name, $vale)
-    {
-        return call_user_func_array(array($this->entity, 'set'), array($name, $vale));
-    }
-    // --- END PROXY TO ENTITY
-
-    /**
-     * Save Last Modified Entity
-     *
-     * @return $this
-     */
-    public function save()
+    public function __invoke()
     {
         $sm = $this->getServiceManager();
-        $sm->get('yimaSettings.Model.Settings')
-            ->save($this->entity);
 
-        return $this;
+        $settService = $sm->get('yimaSettings');
+
+        return $settService;
     }
 
     /**
