@@ -14,11 +14,29 @@ class IndexController extends AbstractActionController
     {
         $currSetting = $this->params()->fromRoute('setting', 'general');
 
-        if ($posts = $this->params()->fromPost()) {
-            // Save Settings
-            // ...
+        $form = $this->getSettingForm($currSetting);
+        // add form action to this page
+        $urlHelper = $this->getServiceLocator()->get('viewhelpermanager')->get('url');
+        $form->setAttribute(
+            'action',
+            $urlHelper(
+                \yimaAdminor\Module::ADMIN_DEFAULT_ROUTE_NAME
+                ,array('setting' => $currSetting)
+                ,true
+            )
+        );
 
-            $this->redirect()->refresh();
+        $posts = $this->params()->fromPost();
+        if ($posts) {
+            $form->bindValues($posts);
+            if ($form->isValid()) {
+                // Save Settings
+                $entity = $form->getData();
+                $this->settingHelper()->save($entity);
+
+                $this->flashMessenger()->addMessage('Settings are saved.');
+                $this->redirect()->refresh();
+            }
         }
 
         // get lists of all settings ... {
@@ -34,8 +52,27 @@ class IndexController extends AbstractActionController
         }
         // ... }
 
-        // prepare current setting form ... {
-        $form = $this->settingHelper()->get($currSetting)->getForm();
+        // return view params
+        return array(
+            'current_setting' => new Entity(
+                array('namespace' => $currSetting, 'label' => $this->settingHelper()->get($currSetting)->getLabel())
+            ),
+            'setting_form'    => $form,
+            'settings_list'   => $settingsList,
+            'flash_messages'  => $this->flashMessenger()->getMessages(),
+        );
+    }
+
+    /**
+     * Get Form for specific setting namespace
+     *
+     * @param string $setting Setting Namespace
+     *
+     * @return \Zend\Form\Form
+     */
+    protected function getSettingForm($setting)
+    {
+        $form = $this->settingHelper()->get($setting)->getForm();
         $form->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',
@@ -46,28 +83,8 @@ class IndexController extends AbstractActionController
             )
         );
 
-        // add form action to this page
-        $urlHelper = $this->getServiceLocator()->get('viewhelpermanager')->get('url');
-        $form->setAttribute(
-            'action',
-            $urlHelper(
-                \yimaAdminor\Module::ADMIN_DEFAULT_ROUTE_NAME
-                ,array('setting' => $currSetting)
-                ,true
-            )
-        );
-
         $form->setAttribute('method', 'post');
-        // ... }
 
-
-        // return view params
-        return array(
-            'current_setting' => new Entity(
-                array('namespace' => $currSetting, 'label' => $this->settingHelper()->get($currSetting)->getLabel())
-            ),
-            'setting_form'    => $form,
-            'settings_list'   => $settingsList,
-        );
+        return $form;
     }
 }

@@ -4,6 +4,15 @@
             <?php echo $this->current_setting->label; ?>
         </h2>
 
+        <?php if(count($this->flash_messages)) : ?>
+            <?php foreach ($this->flash_messages as $msg) : ?>
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <?php echo $msg; ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
         <?php
         // within a view script
         $form = $this->setting_form;
@@ -16,9 +25,9 @@
         ?>
 
         <?php foreach ($form as $key => $element) { ?>
-        <div class="form-group">
+        <?php $messages = $element->getMessages(); ?>
+        <div class="form-group <?php echo ($messages) ? 'has-error' : ''; ?>">
             <?php //error messages  ?>
-            <?php $messages = $element->getMessages(); ?>
 
             <?php // print out label { ?>
             <?php if ($label = $element->getOption('label')) { ?>

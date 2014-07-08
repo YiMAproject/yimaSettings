@@ -129,30 +129,27 @@ class Settings
     *
     * @return boolean
     */
-    public function save()
+    public function save($entity = null)
     {
         $callerID = $this->getCallerId();
-        $entity   = isset($this->latestEntity[$callerID])
-            ? $this->latestEntity[$callerID]
-            : null;
-
         if (!$entity) {
-            throw new \Exception('Nothing to save.');
+            $entity   = isset($this->latestEntity[$callerID])
+                ? $this->latestEntity[$callerID]
+                : false;
         }
 
-        if ($this->getStorage()->save($entity)) {
-            // on successful save update entity values
-            $namespace = $entity->getNamespace();
-
-            $entity = $this->settings[$namespace];
-            $this->getStorage()->load($entity);
-
-            $return = true;
-        } else {
-            $return = false;
+        if ($entity === false) {
+            throw new \Exception('No any setting yet loaded.');
+        } elseif (!$entity instanceof SettingEntity) {
+            throw new \Exception(
+                sprintf(
+                    'Entity must instance of "SettingEntity" but "%s" given.'
+                    , is_object($entity) ? get_class($entity) : gettype($entity)
+                )
+            );
         }
 
-        return $return;
+        return $this->getStorage()->save($entity);
     }
 
     /**
