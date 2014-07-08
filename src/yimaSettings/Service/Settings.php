@@ -70,17 +70,23 @@ class Settings
      */
     public function __get($namespace)
     {
-        $namespace = strtolower($namespace);
+        $namespace = $this->normalizeKey($namespace);
 
         if (! isset($this->settings[$namespace])) {
-            $conf = $this->configs;
-            if (!isset($conf[$namespace])) {
+            $conf = array();
+            foreach ($this->configs as $key => $cnf) {
+                if ($this->normalizeKey($key) == $namespace) {
+                    $conf = $cnf;
+                    break;
+                }
+            }
+
+            if (!isset($conf)) {
                 throw new \Exception("There is no configuration for '{$namespace}' on Yima Settings.");
             }
 
             // set namespace from config array key
-            $conf   = array_merge($conf[$namespace], array('namespace' => $namespace));
-
+            $conf   = array_merge($conf, array('namespace' => $namespace));
             $entity = SettingEntity::factory($conf);
 
             // replace saved config with defaults
@@ -161,6 +167,8 @@ class Settings
      */
     public function hasSetting($namespace)
     {
+        $namespace = $this->normalizeKey($namespace);
+
         return (isset($this->configs[$namespace]) && is_array($this->configs[$namespace]));
     }
 
@@ -186,5 +194,19 @@ class Settings
         }
 
         return $this->storage;
+    }
+
+    /**
+     * Normalize namespaces
+     *
+     * @param string $key Key to normalize
+     *
+     * @return string
+     */
+    protected function normalizeKey($key)
+    {
+        $key = strtolower($key);
+
+        return $key;
     }
 }
