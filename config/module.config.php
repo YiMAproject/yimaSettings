@@ -35,20 +35,24 @@ return array(
                 ),
             ),
             'filters' => array(
-                'linkedin' => array(
-                    function($ve) {
+                'linkedin' => new \Poirot\Dataset\EntityFilterCallable(array(
+                    'callable' => function($ve) {
                         /** @var $ve \yimaSettings\Entity\SettingItemsEntity */
-                        $ve->addFilter(
-                            'value' // entity property
-                            ,function($v) {
-                                return array('social' => array('linkedin' => $v));
-                            }
-                            ,'specific.name'
-                        );
+                        if (!$ve->hasFilter('value', 'specific.name')) {
+                            $ve->addFilter(
+                                'value' // entity property
+                                ,new \Poirot\Dataset\EntityFilterCallable(array(
+                                    'callable' => function($v) {
+                                            return array('social' => array('linkedin' => $v));
+                                        },
+                                    'name' => 'specific.name'
+                                ))
+                            );
+                        }
 
                         return $ve;
-                    }
-                ),
+                    },
+                ))
             ),
             # -----------------------------------------------------------------------------------|
         ),
