@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Entity;
 
-use Poirot\Entity;
+use Poirot\Dataset\Entity;
 use Zend\Stdlib\ArrayUtils;
 
 /**

@@ -66,7 +66,7 @@ class Settings
      * @param string $namespace
      *
      * @throws \Exception
-     * @return \Poirot\Entity | SettingEntity
+     * @return \Poirot\Dataset\Entity | SettingEntity
      */
     public function __get($namespace)
     {
