@@ -34,7 +34,7 @@ class SettingEntityHydrator extends AbstractHydrator
         $entity->clearFilters();
 
         $return = array();
-        /** @var $data \yimaSettings\Service\Settings\SettingEntityItems */
+        /** @var $data \yimaSettings\Entity\SettingItemsEntity */
         foreach($entity as $key => $data) {
             $data = clone $data;   // remain filters from orig. entity
             $data->clearFilters(); // clear filters
