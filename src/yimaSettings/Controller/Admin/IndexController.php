@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Controller\Admin;
 
-use Poirot\Dataset\Entity;
+use Poirot\Entity;
 use Zend\Mvc\Controller\AbstractActionController;
 
 /**

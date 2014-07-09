@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Entity;
 
-use Poirot\Dataset\Entity;
+use Poirot\Entity;
 
 /**
  * Class SettingEntityItems

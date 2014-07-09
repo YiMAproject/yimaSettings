@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Service\Listeners;
 
-use Poirot\Dataset\Entity;
+use Poirot\Entity;
 use yimaSettings\Service\Settings;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
