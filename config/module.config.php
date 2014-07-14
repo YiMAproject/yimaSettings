@@ -38,20 +38,19 @@ return array(
                 'linkedin' => new \Poirot\Dataset\EntityFilterCallable(array(
                     'callable' => function($ve) {
                         /** @var $ve \yimaSettings\Entity\SettingItemsEntity */
-                        if (!$ve->hasFilter('value', 'specific.name')) {
+                        if (!$ve->hasFilter('value', 'value.array')) {
                             $ve->addFilter(
                                 'value' // entity property
                                 ,new \Poirot\Dataset\EntityFilterCallable(array(
                                     'callable' => function($v) {
-                                            return array('social' => array('linkedin' => $v));
-                                        },
-                                    'name' => 'specific.name'
+                                        return array('social' => array('linkedin' => $v));
+                                    },
+                                    'name' => 'value.array'
                                 ))
                             );
                         }
-
-                        return $ve;
                     },
+                    'name' => 'linkedin.array'
                 ))
             ),
             # -----------------------------------------------------------------------------------|

@@ -1,6 +1,7 @@
 <?php
 namespace yimaSettings\Service;
 use yimaSettings\Entity\SettingEntity;
+use yimaSettings\Entity\SettingItemsEntity;
 use yimaSettings\Service\Settings\SettingsStorage;
 use yimaSettings\Service\Settings\SettingsStorageInterface;
 
@@ -90,7 +91,30 @@ class Settings
             $entity = SettingEntity::factory($conf);
 
             // replace saved config with defaults
-            $entity = $this->getStorage()->load($entity);
+            $storage = $this->getStorage();
+            $entity->addFilter('*',
+                new \Poirot\Dataset\EntityFilterCallable(array(
+                        'callable' => function($ve) use ($storage, $entity) {
+                            /** @var $ve SettingItemsEntity */
+                            if (!$ve->hasFilter('value', 'load.ondemand')) {
+                                $ve->addFilter('value', new \Poirot\Dataset\EntityFilterCallable(
+                                    array(
+                                        'callable' => function() use ($storage, $entity) {
+                                            // load variables data on demand when value needed
+                                            /* @TODO return requested loaded property value */
+                                            $storage->load($entity);
+                                        },
+                                        'name' => 'load.ondemand',
+                                        'priority' => 10000,
+                                    )
+                                ));
+                            }
+                        },
+                        'name' => 'load.ondemand.value',
+                        'priority' => 10000,
+                    )
+                )
+            );
 
             $this->settings[$namespace] = $entity;
         }
