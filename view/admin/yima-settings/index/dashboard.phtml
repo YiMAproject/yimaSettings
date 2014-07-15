@@ -27,8 +27,6 @@
         <?php foreach ($form as $key => $element) { ?>
         <?php $messages = $element->getMessages(); ?>
         <div class="form-group <?php echo ($messages) ? 'has-error' : ''; ?>">
-            <?php //error messages  ?>
-
             <?php // print out label { ?>
             <?php if ($label = $element->getOption('label')) { ?>
                 <label
@@ -59,6 +57,9 @@
                 }
                 ?>
                 <?php echo $this->formElement($element); ?>
+
+                <span class="help-block"><?php echo implode('; ', $messages);  ?></span>
+
             </div>
 
         </div>
