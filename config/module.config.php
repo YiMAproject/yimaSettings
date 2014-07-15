@@ -36,14 +36,20 @@ return array(
             ),
             'filters' => array(
                 'linkedin' => new \Poirot\Dataset\EntityFilterCallable(array(
-                    'callable' => function($ve) {
+                    'callable' => function($filterObject) {
+                        /** @var $filterObject \Poirot\Dataset\FilterObjectInterface */
+                        $ve = $filterObject->getValue();
                         /** @var $ve \yimaSettings\Entity\SettingItemsEntity */
                         if (!$ve->hasFilter('value', 'value.array')) {
                             $ve->addFilter(
                                 'value' // entity property
                                 ,new \Poirot\Dataset\EntityFilterCallable(array(
-                                    'callable' => function($v) {
-                                        return array('social' => array('linkedin' => $v));
+                                    'callable' => function($fo) {
+                                        /** @var $fo \Poirot\Dataset\FilterObjectInterface */
+                                        $val = $fo->getValue();
+                                        $fo->setValue(
+                                            array('social' => array('linkedin' => $val))
+                                        );
                                     },
                                     'name' => 'value.array'
                                 ))

@@ -1,5 +1,6 @@
 <?php
 namespace yimaSettings\Service;
+use Poirot\Dataset\FilterObjectInterface;
 use yimaSettings\Entity\SettingEntity;
 use yimaSettings\Entity\SettingItemsEntity;
 use yimaSettings\Service\Settings\SettingsStorage;
@@ -94,15 +95,31 @@ class Settings
             $storage = $this->getStorage();
             $entity->addFilter('*',
                 new \Poirot\Dataset\EntityFilterCallable(array(
-                        'callable' => function($ve) use ($storage, $entity) {
+                        'callable' => function($filterObject) use ($storage, $namespace) {
+                            /** @var $filterObject FilterObjectInterface */
+                            $ve     = $filterObject->getValue();
                             /** @var $ve SettingItemsEntity */
                             if (!$ve->hasFilter('value', 'load.ondemand')) {
                                 $ve->addFilter('value', new \Poirot\Dataset\EntityFilterCallable(
                                     array(
-                                        'callable' => function() use ($storage, $entity) {
-                                            // load variables data on demand when value needed
-                                            /* @TODO return requested loaded property value */
-                                            $storage->load($entity);
+                                        'callable' => function($fo) use ($storage, $filterObject, $namespace) {
+                                            // load entity data ... {
+                                            // previous loaded
+                                            $getPro = $filterObject->getProperty('__get');
+                                            $propName    = '__'.$namespace.'__loaded';
+                                            $loadedProps = $filterObject->getProperty($propName);
+                                            $loadedProps = ($loadedProps) ?: array();
+                                            if (!array_key_exists($getPro, $loadedProps)) {
+                                                $entity = $filterObject->getProperty('entity');
+                                                $storage->load($entity);
+                                                $loadedProps = array_merge($loadedProps, array($getPro => true));
+                                                $filterObject->setProperty($propName, $loadedProps);
+
+                                                $settingsItem = clone $entity->{$getPro};
+                                                $settingsItem->clearFilters();
+                                                $fo->setValue($settingsItem->get('value'));
+                                            }
+                                            // ... }
                                         },
                                         'name' => 'load.ondemand',
                                         'priority' => 10000,
