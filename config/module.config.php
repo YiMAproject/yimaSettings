@@ -31,6 +31,17 @@ return array(
                         # note: only contents of general namespace will merged with app. config
                         'merged_config' => true,
                         # not editable with setting form in controller
+                        'read_only'     => false,
+                    ),
+                ),
+                'website'   => array(
+                    # used as default value
+                    'value' => 'http://raya-media.com',
+                    'label' => 'Raya Web Site',
+
+                    # sets of action behavior options
+                    'options' => array(
+                        # not editable with setting form in controller
                         'read_only'     => true,
                     ),
                 ),

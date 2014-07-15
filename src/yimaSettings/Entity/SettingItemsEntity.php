@@ -32,7 +32,7 @@ class SettingItemsEntity extends Entity
         'element' => array(
             'type' => 'Zend\Form\Element\Text',
             'attributes' => array(
-                'required' => 'required',
+                #'required' => 'required',
             ),
             'options' => array(
                 # these options was replaced by values from top

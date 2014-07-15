@@ -167,33 +167,48 @@ class SettingEntity extends Entity
         $form = new \Zend\Form\Form();
 
         /** @var $ent \yimaSettings\Entity\SettingItemsEntity */
-        foreach($this as $key => $ent) {
-            $ent = $ent->getArrayCopy();
+        foreach($this as $key => $ent)
+        {
+            /* @note: Element values are set from hydrator */
+            $elementLabel = (isset($ent->label)) ? $ent->label : null;
+            $elementName  = $key;
 
-            // collect form elements {
-            if (isset($ent['element']))
-            {
-                // form element data ... {
-                /* @note: Values are set from hydrator */
-                $label = (isset($ent['label'])) ? $ent['label'] : null;
-
-                $element = $ent['element'];
-                if ($label) {
-                    // set label for element
-                    if (!isset($element['options']) && !is_array($element['options'])) {
-                        $element['options'] = array();
-                    }
-                    $element['options'] = ArrayUtils::merge(
-                        $element['options'],
-                        array('label' => $label)
-                    );
-                }
-                $element['name'] = $key; // we need name at least
-                // ... }
-
-                $form->add($element, array());
+            if (isset($ent->options->read_only) && $ent->options->read_only) {
+                // add readonly element
+                $element = array(
+                    'type'    => 'yimaSettings\Form\ReadonlyElement',
+                    'name'    => $elementName,
+                    'attributes' => array(
+                        'disabled' => 'disabled',
+                    ),
+                    'options' => array(
+                        'label' => $elementLabel,
+                    ),
+                );
+                $form->add($element);
             }
-            // ... }
+            else {
+                // add defined element by options
+                $ent = $ent->getArrayCopy();
+                // note: some not defined data come with default entity props -
+                // @see SettingItemsEntity
+                if (isset($ent['element'])) {
+                    $element = $ent['element'];
+                    if ($elementLabel) {
+                        // set label for element
+                        if (!isset($element['options']) && !is_array($element['options'])) {
+                            $element['options'] = array();
+                        }
+                        $element['options'] = ArrayUtils::merge(
+                            $element['options'],
+                            array('label' => $elementLabel)
+                        );
+                    }
+                    $element['name'] = $elementName; // we need name at least
+
+                    $form->add($element);
+                }
+            }
         }
 
         // form hydrator that we can bind settingEntity into form
