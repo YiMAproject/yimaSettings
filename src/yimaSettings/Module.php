@@ -83,7 +83,7 @@ class Module implements
     {
         return array(
             'invokables' => array (
-                'settings' => 'yimaSettings\View\Helper\SettingHelper',
+                'setting' => 'yimaSettings\View\Helper\SettingHelper',
             ),
         );
     }

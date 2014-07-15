@@ -1,17 +1,17 @@
 <?php
 namespace yimaSettings\View\Helper;
 
-use yimaSettings\Service\Settings\SettingEntity;
-use Zend\Form\View\Helper\AbstractHelper;
+use yimaSettings\Service\Settings;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\View\Helper\AbstractHelper;
 
 /**
- * Class Locale
+ * Class settingHelper
  *
- * @package yimaLocali\View\Helper
+ * @package yimaSettings\Controller\Plugin
  */
-class SettingHelper extends AbstractHelper
+class settingHelper extends AbstractHelper
     implements ServiceLocatorAwareInterface
 {
     /**
@@ -20,69 +20,17 @@ class SettingHelper extends AbstractHelper
     protected $serviceLocator;
 
     /**
-     * @var SettingEntity
-     */
-    protected $entity;
-
-    /**
-     * @var string
-     */
-    protected $section;
-
-    /**
      * Invoke as a functor
      *
-     * @return SettingEntity
+     * @return Settings
      */
-    public function __invoke($section = 'defaults')
+    public function __invoke()
     {
-        $this->section = $section;
-
         $sm = $this->getServiceManager();
-        /** @var $entitySett SettingEntity */
-        $entitySett   = $sm->get('yimaSettings')->getSetting($section);
-        $this->entity = $entitySett;
 
-        return $this;
-    }
+        $settService = $sm->get('yimaSettings');
 
-    // PROXY TO ENTITY ---
-
-    /**
-     * Proxy Call to EntitySetting
-     *
-     * @param $method
-     * @param $args
-     *
-     * @return mixed
-     */
-    public function __call($method, $args)
-    {
-        return call_user_func_array(array($this->entity, $method), $args);
-    }
-
-    /**
-     * Proxy Get To EntitySetting
-     * @param $name
-     *
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return call_user_func_array(array($this->entity, 'get'), array($name));
-    }
-
-    /**
-     * Proxy Set To EntitySetting
-     *
-     * @param $name
-     * @param $vale
-     *
-     * @return mixed
-     */
-    public function __set($name, $vale)
-    {
-        return call_user_func_array(array($this->entity, 'set'), array($name, $vale));
+        return $settService;
     }
 
     /**
