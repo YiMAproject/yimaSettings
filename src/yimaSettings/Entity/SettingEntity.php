@@ -171,10 +171,10 @@ class SettingEntity extends Entity
             $ent = $ent->getArrayCopy();
 
             // collect form elements {
-            if (isset($ent['element'])) {
+            if (isset($ent['element']))
+            {
+                // form element data ... {
                 /* @note: Values are set from hydrator */
-
-                // form element data
                 $label = (isset($ent['label'])) ? $ent['label'] : null;
 
                 $element = $ent['element'];
@@ -189,8 +189,9 @@ class SettingEntity extends Entity
                     );
                 }
                 $element['name'] = $key; // we need name at least
+                // ... }
 
-                $form->add($element);
+                $form->add($element, array());
             }
             // ... }
         }

@@ -16,7 +16,8 @@ return array(
                     'element' => array(
                         'type' => 'Zend\Form\Element\Url',
                         'attributes' => array(
-                            'required' => 'required',
+                            #'required' => 'required',
+                            #'disabled' => 'disabled',
                         ),
                         'options' => array(
                             # these options was replaced by values from top
