@@ -4,9 +4,18 @@ namespace yimaSettings\Service\Settings;
 use yimaSettings\Entity\SettingEntity;
 use Zend\Config\Writer\PhpArray as PhpArrayWriter;
 
-
+/**
+ * Class SettingsStorage
+ *
+ * @package yimaSettings\Service\Settings
+ */
 class SettingsStorage implements SettingsStorageInterface
 {
+    /**
+     * @var array Internal Cache to avoid loading namespaces data again
+     */
+    protected $internalCache = array();
+
     /**
      * Save Entity Properties for a section
      * section is sets of related configs that collect together
@@ -19,18 +28,19 @@ class SettingsStorage implements SettingsStorageInterface
     {
         $namespace = $entity->getNamespace();
 
-        $writer = new PhpArrayWriter();
+        // replace internal cache with new data
+        $data = $entity->getHydrator()->extract($entity);
+        $this->internalCache[$namespace] = $data;
 
+        // save entity data
         $file = __DIR__.DS. '../../../../data'.DS. $namespace.'.config.php';
         if (file_exists($file)) {
             // avoid permission denied for files on some servers
             unlink($file);
         }
 
-        $writer->toFile(
-            $file,
-            $entity->getHydrator()->extract($entity)
-        );
+        $writer = new PhpArrayWriter();
+        $writer->toFile($file, $data);
 
         return true;
     }
@@ -46,8 +56,15 @@ class SettingsStorage implements SettingsStorageInterface
     public function load(SettingEntity $entity)
     {
         $namespace = $entity->getNamespace();
+        if (isset($this->internalCache[$namespace])) {
+            // load internal cache data
+            return $this->internalCache[$namespace];
+        }
+
         $data = $this->getNamespaceStoredData($namespace);
         $entity->getHydrator()->hydrate($data, $entity);
+
+        $this->internalCache[$namespace] = $data;
 
         return $entity;
     }
@@ -62,6 +79,10 @@ class SettingsStorage implements SettingsStorageInterface
     protected function getNamespaceStoredData($namespace)
     {
         $return = array();
+
+        if (isset($this->internalCache[$namespace])) {
+
+        }
 
         $file = realpath(__DIR__.DS. '../../../../data'.DS. $namespace.'.config.php');
         if (file_exists($file)) {
