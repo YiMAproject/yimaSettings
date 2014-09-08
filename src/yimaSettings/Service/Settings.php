@@ -97,7 +97,7 @@ class Settings
                 new \Poirot\Dataset\EntityFilterCallable(array(
                         'callable' => function($filterObject) use ($storage, $namespace) {
                             /** @var $filterObject FilterObjectInterface */
-                            $ve     = $filterObject->getValue();
+                            $ve = $filterObject->getValue();
                             /** @var $ve SettingItemsEntity */
                             if (!$ve->hasFilter('value', 'load.ondemand')) {
                                 $ve->addFilter('value', new \Poirot\Dataset\EntityFilterCallable(
