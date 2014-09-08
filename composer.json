@@ -32,11 +32,5 @@
         "classmap" : [
             "./Module.php"
         ]
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.raya-media.com/"
-        }
-    ]
+    }
 }
