@@ -27,10 +27,10 @@ class Module implements
      * @param  ModuleManagerInterface $manager
      * @return void
      */
-    public function init(ModuleManagerInterface $moduleManager)
+    public function init(ModuleManagerInterface $moduleModuleManager)
     {
         /** @var $sharedEvents \Zend\EventManager\SharedEventManager */
-        $sharedEvents = $moduleManager->getEventManager()->getSharedManager();
+        $sharedEvents = $moduleModuleManager->getEventManager()->getSharedManager();
         // attach events listeners
         // * merge merged general settings with app config
         $sharedEvents->attachAggregate(new AggregateListeners());
