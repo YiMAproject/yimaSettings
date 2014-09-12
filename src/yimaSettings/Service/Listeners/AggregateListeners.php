@@ -54,9 +54,11 @@ class AggregateListeners implements SharedListenerAggregateInterface
         $yimaSettings = $sm->get('yimaSettings');
 
         // iterate over values of each settings namespace
-        foreach($yimaSettings->get(/*'general'*/) as $key => $entity) {
+        $generalSetting = $yimaSettings->get(/*'general'*/);
+        foreach($generalSetting as $key => $entity) {
             if (isset($entity->options) && $entity->options->merged_config) {
                 $value = $entity->value;
+
                 if ($value instanceof Entity) {
                     $value = $value->getArrayCopy();
                 } elseif (is_object($value) && method_exists($value, 'toArray')) {

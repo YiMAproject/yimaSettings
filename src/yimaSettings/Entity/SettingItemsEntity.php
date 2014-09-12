@@ -63,6 +63,6 @@ class SettingItemsEntity extends Entity
             throw new \Exception('Invalid element data, must be an array.');
         }
 
-        return $element;
+        return $this;
     }
 }
