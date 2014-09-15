@@ -85,6 +85,7 @@ return array(
                 'route'		 => \yimaAdminor\Module::ADMIN_ROUTE_NAME.'/default',
                 'module'     =>'yimaSettings',
                 'controller' => 'Index',
+                'order' 	 => 10000,
                 //'action'     => 'dashboard', // by default
             ),
         ),
