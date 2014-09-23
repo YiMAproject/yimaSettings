@@ -3,27 +3,32 @@ Key:Value Settings Module
 
 *this module is part of Yima Application Framework*
 
-With this module you have ability to save some key/value settings and retrieve these settings within application.
+Need to give clients access to website configuration settings?
+Module To Managing site-wide settings via a single web page
 
-Get Settings
+Settings are exposed to the administration panel via a simple configuration format.
+
+Module authors can also easily include their own specific configuration settings right from their module.config.php file.
+
+Get Settings Service
 ------------
 
-#### From Service Manager
+##### From Service Manager
 ```php
 $yimaSettings = $serviceManager->get('yimaSettings');
 ```
 
-#### As Controller Plugin
+##### As Controller Plugin
 ```php
 $yimaSettings = $this->settingHelper();
 ```
 
-#### As ViewRenderer Plugin
+##### As ViewRenderer Plugin
 ```php
 $yimaSettings = $this->settingHelper();
 ```
 
-Installation
+Installation 
 -----------
 
 Composer installation:
