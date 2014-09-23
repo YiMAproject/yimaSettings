@@ -27,7 +27,7 @@ interface DataStoreInterface
 
     /**
      * Get Prefix
-     * 
+     *
      * @return string
      */
     public function getPrefix();
