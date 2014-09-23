@@ -23,6 +23,8 @@ class Module implements
 {
     /**
      * Initialize workflow
+     * - Attach Listeners
+     *   . to merge merged general settings with app config
      *
      * @param \Zend\ModuleManager\ModuleManagerInterface $moduleModuleManager
      * @internal param \Zend\ModuleManager\ModuleManagerInterface $manager
@@ -35,7 +37,6 @@ class Module implements
         /** @var $sharedEvents \Zend\EventManager\SharedEventManager */
         $sharedEvents = $moduleModuleManager->getEventManager()->getSharedManager();
         // attach events listeners
-        // * merge merged general settings with app config
         $sharedEvents->attachAggregate(new AggregateListeners());
     }
 
