@@ -26,6 +26,13 @@ interface DataStoreInterface
     public function setPrefix($prefix);
 
     /**
+     * Get Prefix
+     * 
+     * @return string
+     */
+    public function getPrefix();
+
+    /**
      * Pick a prefixed Collection
      *
      * @return Collection
