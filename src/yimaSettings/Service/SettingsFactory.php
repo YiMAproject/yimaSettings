@@ -28,6 +28,7 @@ class SettingsFactory implements FactoryInterface
         $setting = new FileDataStore();
         $dir = \yimaSettings\Module::getDir().'/../../data';
         $setting->setStorageFolder($dir);
+        $setting->setServiceManager($serviceLocator);
 
         return $setting;
     }

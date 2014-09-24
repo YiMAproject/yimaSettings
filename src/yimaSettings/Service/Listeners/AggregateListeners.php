@@ -54,8 +54,6 @@ class AggregateListeners implements SharedListenerAggregateInterface
 
         $generalCollection = $yimaSettings->using('general');
 
-        d_e($generalCollection);
-
         if (! $generalCollection->getOption('merged_config'))
             // no need to merge with config
             return;

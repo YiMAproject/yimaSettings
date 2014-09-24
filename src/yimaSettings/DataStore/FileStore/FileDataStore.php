@@ -3,8 +3,12 @@ namespace yimaSettings\DataStore\FileStore;
 
 use yimaSettings\DataStore\Collection\CollectionInterface;
 use yimaSettings\DataStore\DataStoreInterface;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class FileDataStore implements DataStoreInterface
+class FileDataStore implements
+    DataStoreInterface,
+    ServiceManagerAwareInterface
 {
     /**
      * Collections File Extension
@@ -20,6 +24,13 @@ class FileDataStore implements DataStoreInterface
      * @var string Dir Path To Storage Folder
      */
     protected $storage_folder;
+
+    /**
+     * @var ServiceManager
+     */
+    protected $sm;
+
+
 
     /**
      * Set Storage Prefix
@@ -55,10 +66,18 @@ class FileDataStore implements DataStoreInterface
      */
     public function using($collection)
     {
-        $collection = new FileCollection($collection);
-        $collection->setStorageFolder($this->storage_folder);
+        $collection = strtolower($collection);
 
-        return $collection;
+        $collObject = new FileCollection($collection);
+        $collObject->setStorageFolder($this->storage_folder);
+
+        // set collection options from merged config
+        $config = $this->getMergedConfig();
+        if (isset($config[$collection])
+            && isset($config[$collection]['options']))
+            $collObject->setOptions($config[$collection]['options']);
+
+        return $collObject;
     }
 
     /**
@@ -120,5 +139,28 @@ class FileDataStore implements DataStoreInterface
         $this->storage_folder = $dirpath;
 
         return $this;
+    }
+
+    /**
+     * Get Application Merged Config
+     *
+     * @return array|object
+     */
+    protected function getMergedConfig()
+    {
+        $config  = $this->sm->get('Config');
+        $config  = (isset($config['yima-settings'])) ? $config['yima-settings'] : array();
+
+        return $config;
+    }
+
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        $this->sm = $serviceManager;
     }
 }

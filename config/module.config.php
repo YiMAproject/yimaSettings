@@ -46,6 +46,10 @@ return array(
                     ),
                 ),
             ),
+            'options' => array(
+                // ->getOption('merged_config')
+                'merged_config' => true,
+            ),
             'filters' => array(
                 'linkedin' => new \Poirot\Dataset\EntityFilterCallable(array(
                     'callable' => function($filterObject) {
