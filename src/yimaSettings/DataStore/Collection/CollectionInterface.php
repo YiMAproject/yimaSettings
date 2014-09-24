@@ -9,9 +9,11 @@ interface CollectionInterface
      * Set Identity
      * : use to separate collections row
      *
+     * @param string $identity Identity
+     *
      * @return $this
      */
-    public function setIdentity();
+    public function setIdentity($identity);
 
     /**
      * Get Identity
@@ -22,6 +24,8 @@ interface CollectionInterface
 
     /**
      * Prepare Collection
+     * : before any transaction with storage device
+     *   fetch, save, destroy
      *
      * @return $this
      */

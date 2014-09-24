@@ -1,9 +1,8 @@
 <?php
 namespace yimaSettings\Service\Listeners;
 
-use Poirot\Dataset\Entity;
-use yimaSettings\DataStore\DataStoreAbstract;
 use yimaSettings\DataStore\Entity\Converter\ArrayConverter;
+use yimaSettings\DataStore\FileStore\FileDataStore;
 use yimaSettings\Service\Settings;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
@@ -50,10 +49,13 @@ class AggregateListeners implements SharedListenerAggregateInterface
         /** @var $sm \Zend\ServiceManager\ServiceManager */
         $sm = $mvcEvent->getApplication()->getServiceManager();
 
-        /** @var $yimaSettings DataStoreAbstract */
+        /** @var $yimaSettings FileDataStore */
         $yimaSettings = $sm->get('yimaSettings');
 
         $generalCollection = $yimaSettings->using('general');
+
+        d_e($generalCollection);
+
         if (! $generalCollection->getOption('merged_config'))
             // no need to merge with config
             return;

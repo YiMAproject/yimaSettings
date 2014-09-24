@@ -5,6 +5,7 @@ use yimaSettings\Service\Listeners\AggregateListeners;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
+use Zend\ModuleManager\Feature\LocatorRegisteredInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
@@ -19,7 +20,8 @@ class Module implements
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface,
-    ViewHelperProviderInterface
+    ViewHelperProviderInterface,
+    LocatorRegisteredInterface
 {
     /**
      * Initialize workflow
@@ -106,5 +108,15 @@ class Module implements
                 ),
             ),
         );
+    }
+
+    /**
+     * Get Module Directory
+     *
+     * @return string
+     */
+    public static function getDir()
+    {
+        return __DIR__;
     }
 }

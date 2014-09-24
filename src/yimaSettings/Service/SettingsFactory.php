@@ -1,7 +1,7 @@
 <?php
 namespace yimaSettings\Service;
 
-use yimaSettings\DataStore\DataStoreAbstract;
+use yimaSettings\DataStore\FileStore\FileDataStore;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -25,7 +25,9 @@ class SettingsFactory implements FactoryInterface
 
         $setting = new Settings($config);*/
 
-        $setting = new DataStoreAbstract();
+        $setting = new FileDataStore();
+        $dir = \yimaSettings\Module::getDir().'/../../data';
+        $setting->setStorageFolder($dir);
 
         return $setting;
     }
