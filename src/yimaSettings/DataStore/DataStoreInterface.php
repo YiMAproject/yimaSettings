@@ -1,6 +1,8 @@
 <?php
 namespace yimaSettings\DataStore;
 
+use yimaSettings\DataStore\Collection\CollectionInterface;
+
 /**
  * Interface DataStoreInterface
  * : This is main interface that Setting Service
@@ -35,7 +37,7 @@ interface DataStoreInterface
     /**
      * Pick a prefixed Collection
      *
-     * @return Collection
+     * @return CollectionInterface
      */
     public function using($collection);
 
