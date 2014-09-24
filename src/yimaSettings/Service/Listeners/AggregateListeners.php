@@ -2,6 +2,8 @@
 namespace yimaSettings\Service\Listeners;
 
 use Poirot\Dataset\Entity;
+use yimaSettings\DataStore\DataStoreAbstract;
+use yimaSettings\DataStore\Entity\Converter\ArrayConverter;
 use yimaSettings\Service\Settings;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
@@ -48,36 +50,19 @@ class AggregateListeners implements SharedListenerAggregateInterface
         /** @var $sm \Zend\ServiceManager\ServiceManager */
         $sm = $mvcEvent->getApplication()->getServiceManager();
 
-        $config = $sm->get('config');
-
-        /** @var $yimaSettings Settings */
+        /** @var $yimaSettings DataStoreAbstract */
         $yimaSettings = $sm->get('yimaSettings');
 
-        // iterate over values of each settings namespace
-        $generalSetting = $yimaSettings->get(/*'general'*/);
-        foreach($generalSetting as $key => $entity) {
-            if (isset($entity->options) && $entity->options->merged_config) {
-                $value = $entity->value;
+        $generalCollection = $yimaSettings->using('general');
+        if (! $generalCollection->getOption('merged_config'))
+            // no need to merge with config
+            return;
 
-                if ($value instanceof Entity) {
-                    $value = $value->getArrayCopy();
-                } elseif (is_object($value) && method_exists($value, 'toArray')) {
-                    $value = $value->toArray();
-                }
+        $config = $sm->get('config');
+        $generalSetting = $generalCollection->fetch();
+        $generalAsConf  = $generalSetting->getAs(new ArrayConverter());
 
-                if (is_array($value)) {
-                    $config = ArrayUtils::merge($config, $value);
-                } else {
-                    throw new \Exception(
-                        sprintf(
-                            'Settings value "%s" mark as merged config but "%s" given and can`t merge.'
-                            ,$key
-                            ,(is_object($value)) ? get_class($value) : gettype($value)
-                        )
-                    );
-                }
-            }
-        } # end foreach
+        $config = ArrayUtils::merge($config, $generalAsConf);
 
         // merge settings with application config
         $sm->setAllowOverride(true);
