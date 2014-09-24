@@ -1,6 +1,8 @@
 <?php
 namespace yimaSettings\DataStore\Collection;
 
+use yimaSettings\DataStore\Entity;
+
 interface CollectionInterface
 {
     /**
@@ -28,7 +30,7 @@ interface CollectionInterface
     /**
      * Fetch Identified Data Entity
      *
-     * @return DataEntity
+     * @return Entity
      */
     public function fetch();
 
@@ -36,12 +38,12 @@ interface CollectionInterface
      * Save Data Entity In Collection
      * : it must use identity
      *
-     * @param DataEntity $entity
+     * @param Entity $entity
      *
      * @throws \Exception Failed
      * @return $this
      */
-    public function save(DataEntity $entity);
+    public function save(Entity $entity);
 
     /**
      * Destroy Identity Collection And All Data
