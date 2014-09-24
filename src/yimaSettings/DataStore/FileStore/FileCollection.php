@@ -23,6 +23,13 @@ class FileCollection implements CollectionInterface
     protected $internalCache = array();
 
     /**
+     * @var Array
+     */
+    protected $options = array();
+
+
+
+    /**
      * Construct
      *
      * @param $identity
@@ -169,7 +176,9 @@ class FileCollection implements CollectionInterface
      */
     public function setOption($option, $value)
     {
-        // TODO: Implement setOption() method.
+        $this->options[$option] = $value;
+
+        return $this;
     }
 
     /**
@@ -181,7 +190,7 @@ class FileCollection implements CollectionInterface
      */
     public function getOption($option)
     {
-        // TODO: Implement getOption() method.
+        return $this->options[$option];
     }
 
     /**
@@ -193,7 +202,11 @@ class FileCollection implements CollectionInterface
      */
     public function setOptions(array $options)
     {
-        // TODO: Implement setOptions() method.
+        foreach ($options as $option => $value) {
+            $this->setOption($option, $value);
+        }
+
+        return $this;
     }
 
     // ----------------------------------------------------------------------------
