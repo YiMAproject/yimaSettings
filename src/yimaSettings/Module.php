@@ -16,12 +16,27 @@ use Zend\ModuleManager\ModuleManagerInterface;
  * @package yimaSettings
  */
 class Module implements
+    InitProviderInterface,
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface,
     ViewHelperProviderInterface,
     LocatorRegisteredInterface
 {
+    /**
+     * Initialize workflow
+     * - Attach Listeners
+     *   . to merge merged general settings with app config
+     *
+     * @param \Zend\ModuleManager\ModuleManagerInterface $moduleModuleManager
+     * @internal param \Zend\ModuleManager\ModuleManagerInterface $manager
+     * @return void
+     */
+    public function init(ModuleManagerInterface $moduleModuleManager)
+    {
+        $moduleModuleManager->loadModule('yimaAdminor');
+    }
+
     /**
      * Returns configuration to merge with application configuration
      *
