@@ -1,7 +1,6 @@
 <?php
 namespace yimaSettings;
 
-use yimaSettings\Service\Listeners\AggregateListeners;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
