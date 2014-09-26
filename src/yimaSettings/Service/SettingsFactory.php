@@ -20,11 +20,6 @@ class SettingsFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /*$config  = $serviceLocator->get('Config');
-        $config  = (isset($config['yima-settings'])) ? $config['yima-settings'] : array();
-
-        $setting = new Settings($config);*/
-
         $setting = new FileDataStore();
         $dir = \yimaSettings\Module::getDir().'/../../data';
         $setting->setStorageFolder($dir);

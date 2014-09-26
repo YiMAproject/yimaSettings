@@ -25,9 +25,6 @@ return array(
                     ),
                     # sets of action behavior options
                     'options' => array(
-                        # merge with application config on bootstrap
-                        # note: only contents of general namespace will merged with app. config
-                        'merged_config' => true,
                         # not editable with setting form in controller
                         'read_only'     => false,
                     ),

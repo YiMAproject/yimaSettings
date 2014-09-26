@@ -1,8 +1,9 @@
 <?php
 namespace yimaSettings\Controller\Admin;
 
-use Poirot\Dataset\Entity;
+use yimaSettings\DataStore\Entity;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class IndexController
@@ -31,8 +32,8 @@ class IndexController extends AbstractActionController
             $form->bindValues($posts);
             if ($form->isValid()) {
                 // Save Settings
-                $entity = $form->getData();
-                $this->settingHelper()->save($entity);
+                $entity = new Entity($form->getData());
+                $this->settingHelper()->using($currSetting)->save($entity);
 
                 $this->flashMessenger()->addMessage('Settings are saved.');
                 $this->redirect()->refresh();
@@ -40,13 +41,16 @@ class IndexController extends AbstractActionController
         }
 
         // get lists of all settings ... {
-        $settingsList = new Entity();
-        foreach($this->settingHelper()->getSettingsList() as $ns)
+        $settingsList = new \Poirot\Dataset\Entity();
+        $config  = $this->getServiceLocator()
+            ->get('Config');
+        $config  = (isset($config['yima-settings'])) ? $config['yima-settings'] : array();
+        foreach(array_keys($config) as $ns)
         {
             $settingsList->set(
                 $ns,
                 array(
-                    'label' => $this->settingHelper()->get($ns)->getLabel()
+                    'label' => $config[$ns]['label']
                 )
             );
         }
@@ -54,8 +58,8 @@ class IndexController extends AbstractActionController
 
         // return view params
         return array(
-            'current_setting' => new Entity(
-                array('namespace' => $currSetting, 'label' => $this->settingHelper()->get($currSetting)->getLabel())
+            'current_setting' => new \Poirot\Dataset\Entity(
+                array('namespace' => $currSetting, 'label' => $config[$currSetting]['label'])
             ),
             'setting_form'    => $form,
             'settings_list'   => $settingsList,
@@ -72,7 +76,61 @@ class IndexController extends AbstractActionController
      */
     protected function getSettingForm($setting)
     {
-        $form = $this->settingHelper()->get($setting)->getForm();
+        $config  = $this->getServiceLocator()
+            ->get('Config');
+        $config  = (isset($config['yima-settings'])) ? $config['yima-settings'] : array();
+        $config  = (isset($config[$setting])) ? $config[$setting] : $config;
+        $config  = (isset($config['properties'])) ? $config['properties'] : $config;
+
+        $form = new \Zend\Form\Form();
+
+        foreach($config as $sett => $ent)
+        {
+            /* @note: Element values are set from hydrator */
+            $elementLabel = (isset($ent['label'])) ? $ent['label'] : null;
+            $elementName  = $sett;
+
+            if (isset($ent['options']) && isset($ent['options']['read_only'])
+                && $ent['options']['read_only']) {
+                // add readonly element
+                $element = array(
+                    'type'    => 'yimaSettings\Form\ReadonlyElement',
+                    'name'    => $elementName,
+                    'attributes' => array(
+                        'disabled' => 'disabled',
+                    ),
+                    'options' => array(
+                        'label' => $elementLabel,
+                    ),
+                );
+                $form->add($element);
+            }
+            else {
+                // note: some not defined data come with default entity props -
+                // @see SettingItemsEntity
+                if (isset($ent['element'])) {
+                    $element = $ent['element'];
+                    if ($elementLabel) {
+                        // set label for element
+                        if (!isset($element['options']) && !is_array($element['options'])) {
+                            $element['options'] = array();
+                        }
+                        $element['options'] = ArrayUtils::merge(
+                            $element['options'],
+                            array('label' => $elementLabel)
+                        );
+                    }
+                    $element['name'] = $elementName; // we need name at least
+
+                    $form->add($element);
+                }
+            }
+        }
+
+        $currentSettingValues = $this->settingHelper()->using($setting)->fetch();
+        $currentSettingValues = $currentSettingValues->getAs(new Entity\Converter\ArrayConverter());
+        $form->setData($currentSettingValues);
+
         $form->add(
             array(
                 'type'       => 'Zend\Form\Element\Submit',
