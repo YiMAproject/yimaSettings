@@ -37,6 +37,7 @@ class IndexController extends AbstractActionController
                 unset($formData['submit']);
 
                 // TODO: filter read-only data from formData
+                // TODO: filter only form data
                 unset($formData['website']);
 
                 /** @var $collection \yimaSettings\DataStore\FileStore\FileCollection */
