@@ -79,8 +79,11 @@ class FileCollection implements CollectionInterface
                 throw new \Exception(
                     sprintf('Can`t create file "%s".', $file)
                 );
-            else
+            else {
+                // write empty entity
+                $this->save(new Entity());
                 fclose($f);
+            }
 
         return $this;
     }
@@ -106,7 +109,10 @@ class FileCollection implements CollectionInterface
         } , E_ALL);
 
         try {
-            $data = include($this->getStorageFilePathname());
+            $file = $this->getStorageFilePathname();
+            $data = include($file);
+            if (!is_array($data))
+                throw new \Exception('Invalid Data Structure.');
         } catch (\Exception $e) {
             throw $e;
         }

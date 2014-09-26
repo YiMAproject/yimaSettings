@@ -48,6 +48,7 @@ class Entity
      * @param $prop
      * @param null $default Default Empty None Value
      *
+     * @throws Exception\PropertyNotFoundException
      * @throw PropertyNotFoundException
      * @return mixed
      */
@@ -85,7 +86,7 @@ class Entity
      */
     public function has($prop)
     {
-        return isset($this->properties[$prop]) || $this->properties[$prop] === null;
+        return isset($this->properties[$prop]);
     }
 
     /**
@@ -130,6 +131,7 @@ class Entity
     /**
      * Get a copy of properties as hydrate structure
      *
+     * @param Entity\ConverterInterface $converter
      * @return mixed
      */
     public function getAs(ConverterInterface $converter)
