@@ -75,7 +75,7 @@ class FileCollection implements CollectionInterface
     {
         $file = $this->getStorageFilePathname();
         if (!file_exists($file))
-            if (!$f = fopen($file, 'w'))
+            if (!$f = @fopen($file, 'w'))
                 throw new \Exception(
                     sprintf('Can`t create file "%s".', $file)
                 );
@@ -88,6 +88,7 @@ class FileCollection implements CollectionInterface
     /**
      * Fetch Identified Data Entity
      *
+     * @throws \Exception
      * @return Entity
      */
     public function fetch()
@@ -222,6 +223,7 @@ class FileCollection implements CollectionInterface
      *
      * @param string $dirpath Dir Path
      *
+     * @throws \Exception
      * @return $this
      */
     public function setStorageFolder($dirpath)
