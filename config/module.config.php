@@ -44,8 +44,6 @@ return array(
                 ),
             ),
             'options' => array(
-                // ->getOption('merged_config')
-                'merged_config' => true,
                 // default values
                 'default_values' => array(
                     'linkedin' => 'http://linkedin.com',
