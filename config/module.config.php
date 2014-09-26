@@ -8,8 +8,6 @@ return array(
             'label' => 'General System Settings',
             'properties' => array(
                 'linkedin'   => array(
-                    # used as default value
-                    'value' => 'http://linkedin.com',
                     'label' => 'Your Linkedin Address',
 
                     # form element
@@ -36,7 +34,6 @@ return array(
                 ),
                 'website'   => array(
                     # used as default value
-                    'value' => 'http://raya-media.com',
                     'label' => 'Raya Web Site',
 
                     # sets of action behavior options
@@ -49,33 +46,12 @@ return array(
             'options' => array(
                 // ->getOption('merged_config')
                 'merged_config' => true,
+                // default values
+                'default_values' => array(
+                    'linkedin' => 'http://linkedin.com',
+                    'website'  => 'http://raya-media.com',
+                ),
             ),
-            'filters' => array(
-                'linkedin' => new \Poirot\Dataset\EntityFilterCallable(array(
-                    'callable' => function($filterObject) {
-                        /** @var $filterObject \Poirot\Dataset\FilterObjectInterface */
-                        $ve = $filterObject->getValue();
-                        /** @var $ve \yimaSettings\Entity\SettingItemsEntity */
-                        if (!$ve->hasFilter('value', 'value.array')) {
-                            $ve->addFilter(
-                                'value' // entity property
-                                ,new \Poirot\Dataset\EntityFilterCallable(array(
-                                    'callable' => function($fo) {
-                                        /** @var $fo \Poirot\Dataset\FilterObjectInterface */
-                                        $val = $fo->getValue();
-                                        $fo->setValue(
-                                            array('social' => array('linkedin' => $val))
-                                        );
-                                    },
-                                    'name' => 'value.array'
-                                ))
-                            );
-                        }
-                    },
-                    'name' => 'linkedin.array'
-                ))
-            ),
-            # -----------------------------------------------------------------------------------|
         ),
     ),
 

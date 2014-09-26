@@ -4,6 +4,7 @@ namespace yimaSettings\DataStore\FileStore;
 use Zend\Config\Writer\PhpArray as PhpArrayWriter;
 use yimaSettings\DataStore\Collection\CollectionInterface;
 use yimaSettings\DataStore\Entity;
+use Zend\Stdlib\ArrayUtils;
 
 class FileCollection implements CollectionInterface
 {
@@ -109,6 +110,11 @@ class FileCollection implements CollectionInterface
             throw $e;
         }
         restore_error_handler();
+
+        // merge with default values
+        $default_values = $this->getOption('default_values');
+        if ($default_values)
+            $data = ArrayUtils::merge($default_values, $data);
 
         $entity = new Entity();
         $entity->setFrom(new Entity\Converter\ArrayConverter($data));
