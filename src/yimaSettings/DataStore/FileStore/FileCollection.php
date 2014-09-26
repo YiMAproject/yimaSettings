@@ -139,7 +139,7 @@ class FileCollection implements CollectionInterface
 
         // replace internal cache with new data
         $identity = $this->getIdentity();
-        $this->internalCache[$identity] = $data;
+        $this->internalCache[$identity] = $entity;
 
         // save entity data
         $file = $this->getStorageFilePathname();
