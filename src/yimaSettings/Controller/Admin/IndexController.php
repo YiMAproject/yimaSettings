@@ -1,6 +1,7 @@
 <?php
 namespace yimaSettings\Controller\Admin;
 
+use yimaSettings\DataStore\Collection\CollectionInterface;
 use yimaSettings\DataStore\Entity;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\ArrayUtils;
@@ -29,11 +30,24 @@ class IndexController extends AbstractActionController
 
         $posts = $this->params()->fromPost();
         if ($posts) {
-            $form->bindValues($posts);
+            $form->setData($posts);
             if ($form->isValid()) {
                 // Save Settings
-                $entity = new Entity($form->getData());
-                $this->settingHelper()->using($currSetting)->save($entity);
+                $formData = $form->getData();
+                unset($formData['submit']);
+
+                // TODO: filter read-only data from formData
+                unset($formData['website']);
+
+                /** @var $collection \yimaSettings\DataStore\FileStore\FileCollection */
+                $collection = $this->settingHelper()->using($currSetting);
+                $curEntity  = $collection->fetch();
+                $curEntity  = $curEntity->getAs(new Entity\Converter\ArrayConverter());
+
+                $data = ArrayUtils::merge($curEntity, $formData);
+
+                $entity = new Entity($data);
+                $collection->save($entity);
 
                 $this->flashMessenger()->addMessage('Settings are saved.');
                 $this->redirect()->refresh();
