@@ -91,6 +91,29 @@ class IndexController extends AbstractActionController
      */
     protected function getSettingForm($setting)
     {
+        /**
+         * Merge with Setting/Properties/Item on config
+         * as default array values
+         */
+        $def_properties_item = array(
+            'label' => 'Enter Value',
+            # form element
+            'element' => array(
+                'type' => 'Zend\Form\Element\Text',
+                'attributes' => array(
+                    #'required' => 'required',
+                ),
+                'options' => array(
+                    # these options was replaced by values from top
+                    # 'label' => 'label not set here',
+                    # 'value' => 'value not set from here because of hydrator',
+                ),
+            ),
+            'options' => array(
+                'read_only' => false,
+            ),
+        );
+
         $config  = $this->getServiceLocator()
             ->get('Config');
         $config  = (isset($config['yima-settings'])) ? $config['yima-settings'] : array();
@@ -101,7 +124,7 @@ class IndexController extends AbstractActionController
 
         foreach($config as $sett => $ent)
         {
-            /* @note: Element values are set from hydrator */
+            $ent = ArrayUtils::merge($def_properties_item, $ent);
             $elementLabel = (isset($ent['label'])) ? $ent['label'] : null;
             $elementName  = $sett;
 
@@ -121,8 +144,6 @@ class IndexController extends AbstractActionController
                 $form->add($element);
             }
             else {
-                // note: some not defined data come with default entity props -
-                // @see SettingItemsEntity
                 if (isset($ent['element'])) {
                     $element = $ent['element'];
                     if ($elementLabel) {
