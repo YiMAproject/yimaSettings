@@ -86,7 +86,7 @@ class Entity
      */
     public function has($prop)
     {
-        return isset($this->properties[$prop]);
+        return array_key_exists($prop, $this->properties);
     }
 
     /**
