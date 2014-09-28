@@ -12,8 +12,6 @@ Settings are exposed to the administration panel via a simple configuration form
 
 Module authors can also easily include their own specific configuration settings right from their module.config.php file.
 
-[WORK IN PROGRESS ... ]
-
 Get Settings Service
 ------------
 
@@ -31,6 +29,14 @@ $yimaSettings = $this->settingHelper();
 ```php
 $yimaSettings = $this->settingHelper();
 ```
+
+Documentation TODO 
+-----------
+
+- settings configuration
+- how to access settings saved data
+- save data to settings
+
 
 Installation 
 -----------
